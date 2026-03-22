@@ -76,7 +76,7 @@ class ConsultationSerializer(serializers.ModelSerializer):
     class Meta:
         model = Consultation
         fields = '__all__'
-        read_only_fields = ['created_at', 'doctor', 'updated_at']
+        read_only_fields = ['appointment', 'created_at', 'doctor', 'updated_at']
 
 class NurseTaskSerializer(serializers.ModelSerializer):
     doctor_name = serializers.CharField(source='doctor.username', read_only=True)

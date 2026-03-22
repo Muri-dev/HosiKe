@@ -52,8 +52,8 @@ const AdminAdmissions = () => {
         {
             header: 'Actions', render: r => (
                 <div className="flex-start gap-0_5">
-                    <button className="btn-icon text-primary" onClick={() => handleEdit(r)}><Edit2 size={16} /></button>
-                    <button className="btn-icon text-danger" onClick={() => handleDischarge(r.id)}><LogOut size={16} /></button>
+                    <button className="btn-icon text-primary" aria-label="Edit Admission" onClick={() => handleEdit(r)}><Edit2 size={16} /></button>
+                    <button className="btn-icon text-danger" aria-label="Discharge Patient" onClick={() => handleDischarge(r.id)}><LogOut size={16} /></button>
                 </div>
             )
         }

@@ -99,7 +99,7 @@ const AppointmentsPage = () => {
                 return;
             }
             try {
-                const response = await api.get(`/search/users/?q=${patientSearch}`);
+                const response = await api.get(`/patients/?q=${patientSearch}`);
                 setPatients(response.data);
             } catch (error) {
                 console.error("Failed to search patients", error);

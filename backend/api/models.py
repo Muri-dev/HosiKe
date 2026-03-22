@@ -123,6 +123,7 @@ class PrescriptionItem(models.Model):
     instructions = models.TextField(blank=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='active')
     discontinued_reason = models.TextField(blank=True, null=True)
+    active_until = models.DateField(null=True, blank=True)
     
     administered = models.BooleanField(default=False)
     administered_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='administered_items')

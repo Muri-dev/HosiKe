@@ -11,6 +11,7 @@ import Toast from '../../components/common/Toast';
 import ErrorBanner from '../../components/common/ErrorBanner';
 import PatientProfileEditModal from './PatientProfileEditModal';
 import MessagingPage from '../messaging/MessagingPage';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 // ── helpers ────────────────────────────────────────────────────────────────
 const fmt = (d) => d ? new Date(d).toLocaleString('en-KE') : '—';
@@ -81,8 +82,34 @@ const TABS = [
 // ═════════════════════════════════════════════════════════════════════════════
 export default function PatientDashboard() {
     const { user: authUser } = useAuth();
+    const location = useLocation();
+    const navigate = useNavigate();
 
-    const [activeTab, setActiveTab] = useState('summary');
+    const getTabFromPath = (path) => {
+        if (path.includes('/appointments')) return 'appointments';
+        if (path.includes('/vitals')) return 'vitals';
+        if (path.includes('/feedback')) return 'history';
+        return 'summary';
+    };
+
+    const [activeTab, setActiveTab] = useState(getTabFromPath(location.pathname));
+
+    useEffect(() => {
+        setActiveTab(getTabFromPath(location.pathname));
+        if (location.pathname.includes('/book')) {
+            setShowBook(true);
+            navigate('/patient/me', { replace: true });
+        }
+    }, [location.pathname, navigate]);
+
+    const handleTabClick = (id) => {
+        setActiveTab(id);
+        if (id === 'summary') navigate('/patient/me', { replace: true });
+        else if (id === 'appointments') navigate('/patient/appointments', { replace: true });
+        else if (id === 'vitals') navigate('/patient/vitals', { replace: true });
+        else if (id === 'history') navigate('/patient/feedback', { replace: true });
+        // other tabs like 'prescriptions' or 'messages' stay on the current URL
+    };
     const [profile, setProfile] = useState(null);
     const [admission, setAdmission] = useState(undefined); // undefined=loading, null=none
     const [appointments, setAppointments] = useState([]);
@@ -208,7 +235,8 @@ export default function PatientDashboard() {
     // ── derived ─────────────────────────────────────────────────────────────
     const upcoming = appointments.filter(a => ['pending', 'pending_approval', 'approved', 'in_progress'].includes(a.status));
     const latest = vitals[0] || null;
-    const activeRx = scripts.filter(s => s.items?.some(i => i.status === 'active'));
+    const isItemActive = (i) => i.status === 'active' && (!i.active_until || new Date(i.active_until) >= new Date(new Date().setHours(0, 0, 0, 0)));
+    const activeRx = scripts.filter(s => s.items?.some(isItemActive));
 
     // ── Patient status badge ─────────────────────────────────────────────────
     const patientStatus = admission ? 'Admitted' : 'Active';
@@ -293,7 +321,7 @@ export default function PatientDashboard() {
                 marginBottom: '1.5rem', overflowX: 'auto',
             }}>
                 {TABS.map(({ id, label, icon: Icon }) => (
-                    <button key={id} onClick={() => setActiveTab(id)} style={{
+                    <button key={id} onClick={() => handleTabClick(id)} style={{
                         padding: '0.65rem 1rem', border: 'none', background: 'none', cursor: 'pointer',
                         fontWeight: 600, fontSize: '0.87rem', color: activeTab === id ? 'var(--primary-color)' : '#64748b',
                         borderBottom: `2px solid ${activeTab === id ? 'var(--primary-color)' : 'transparent'}`,
@@ -389,7 +417,7 @@ export default function PatientDashboard() {
                                         <div style={{ fontSize: '0.8rem', color: '#64748b', marginBottom: '0.25rem' }}>
                                             Dr. {rx.doctor_name} · {fmtD(rx.date_time)}
                                         </div>
-                                        {rx.items.filter(i => i.status === 'active').slice(0, 2).map(item => (
+                                        {rx.items.filter(isItemActive).slice(0, 2).map(item => (
                                             <div key={item.id} style={{ fontSize: '0.88rem', fontWeight: 600 }}>
                                                 💊 {item.medicine_name} — {item.dosage} · {item.frequency}
                                             </div>
@@ -642,11 +670,11 @@ export default function PatientDashboard() {
                                             <div>
                                                 <div style={{ fontWeight: 700 }}>{item.medicine_name}</div>
                                                 <div style={{ fontSize: '0.82rem', color: '#64748b' }}>
-                                                    {[item.dosage, item.frequency, item.duration, item.route].filter(Boolean).join(' · ')}
+                                                    {[item.dosage, item.frequency, item.duration, item.route, item.active_until ? `Until ${new Date(item.active_until).toLocaleDateString()}` : ''].filter(Boolean).join(' · ')}
                                                 </div>
                                                 {item.instructions && <div style={{ fontSize: '0.8rem', color: '#94a3b8', marginTop: '0.15rem' }}>{item.instructions}</div>}
                                             </div>
-                                            <Badge label={item.status} />
+                                            <Badge label={item.status === 'active' && item.active_until && new Date(item.active_until) < new Date(new Date().setHours(0, 0, 0, 0)) ? 'expired' : item.status} />
                                         </div>
                                     ))}
                                 </div>

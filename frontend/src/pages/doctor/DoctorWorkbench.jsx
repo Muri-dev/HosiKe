@@ -25,7 +25,7 @@ const DoctorWorkbench = () => {
 
     // Rx & Tasks State
     const [prescriptionItems, setPrescriptionItems] = useState([]);
-    const [newItem, setNewItem] = useState({ medicine_name: '', dosage: '', route: 'Oral', frequency: '', duration: '', instructions: '' });
+    const [newItem, setNewItem] = useState({ medicine_name: '', dosage: '', route: 'Oral', frequency: '', duration: '', active_until: '', instructions: '' });
     const [tasks, setTasks] = useState([]);
     const [newTask, setNewTask] = useState({ task_type: 'Observation', details: '', priority: 'normal' });
 
@@ -112,7 +112,7 @@ const DoctorWorkbench = () => {
     const addRxItem = () => {
         if (!newItem.medicine_name) return setToast({ message: "Medicine Name required", type: 'error' });
         setPrescriptionItems([...prescriptionItems, newItem]);
-        setNewItem({ medicine_name: '', dosage: '', route: 'Oral', frequency: '', duration: '', instructions: '' });
+        setNewItem({ medicine_name: '', dosage: '', route: 'Oral', frequency: '', duration: '', active_until: '', instructions: '' });
     };
 
     const saveRx = async () => {
@@ -138,18 +138,14 @@ const DoctorWorkbench = () => {
     if (loading) return <LoadingSkeleton />;
     if (!appointment) return <div className="p-4 text-center">Not Found</div>;
 
-    const TabButton = ({ id, icon: Icon, label }) => (
-        <button onClick={() => setActiveTab(id)} className={`tab-btn ${activeTab === id ? 'active' : ''}`}>
-            <Icon size={18} /> {label}
-        </button>
-    );
+    // Render Helpers
 
     return (
         <div className="fade-in workbench-container">
             {/* Top Bar */}
             <div className="top-bar card flex-between mb-1 p-1 sticky-top z-10">
                 <div className="flex-start gap-1">
-                    <button className="btn-icon" onClick={() => navigate('/doctor/appointments')}><ArrowLeft /></button>
+                    <button className="btn-icon" aria-label="Go back to appointments" onClick={() => navigate('/doctor/appointments')}><ArrowLeft /></button>
                     <div>
                         <h2 className="mb-0">{appointment.patient_name}</h2>
                         <div className="text-sm text-muted flex-start gap-1">
@@ -226,12 +222,12 @@ const DoctorWorkbench = () => {
 
                 {/* Right Content: Tabs */}
                 <div className="content-area card">
-                    <div className="tabs-nav">
-                        <TabButton id="summary" icon={FileText} label="Clinical Note" />
-                        <TabButton id="tabs_rx" icon={Pill} label="Prescriptions" />
-                        <TabButton id="orders" icon={ClipboardList} label="Orders" />
-                        <TabButton id="history" icon={HistoryIcon} label="History" />
-                        <TabButton id="messages" icon={MessageSquare} label="Chat" />
+                    <div className="tabs-nav" role="tablist">
+                        <button role="tab" aria-selected={activeTab === 'summary'} onClick={() => setActiveTab('summary')} className={`tab-btn ${activeTab === 'summary' ? 'active' : ''}`}><FileText size={18} /> Clinical Note</button>
+                        <button role="tab" aria-selected={activeTab === 'tabs_rx'} onClick={() => setActiveTab('tabs_rx')} className={`tab-btn ${activeTab === 'tabs_rx' ? 'active' : ''}`}><Pill size={18} /> Prescriptions</button>
+                        <button role="tab" aria-selected={activeTab === 'orders'} onClick={() => setActiveTab('orders')} className={`tab-btn ${activeTab === 'orders' ? 'active' : ''}`}><ClipboardList size={18} /> Orders</button>
+                        <button role="tab" aria-selected={activeTab === 'history'} onClick={() => setActiveTab('history')} className={`tab-btn ${activeTab === 'history' ? 'active' : ''}`}><HistoryIcon size={18} /> History</button>
+                        <button role="tab" aria-selected={activeTab === 'messages'} onClick={() => setActiveTab('messages')} className={`tab-btn ${activeTab === 'messages' ? 'active' : ''}`}><MessageSquare size={18} /> Chat</button>
                     </div>
 
                     <div className="tab-body p-1_5">
@@ -289,9 +285,13 @@ const DoctorWorkbench = () => {
                                             <option>Oral</option><option>IV</option><option>IM</option><option>Sublingual</option>
                                         </select>
                                     </div>
-                                    <div className="grid-2 gap-1 mb-1">
+                                    <div className="grid-3 gap-1 mb-1">
                                         <input className="form-control" placeholder="Frequency (e.g. BID)" value={newItem.frequency} onChange={e => setNewItem({ ...newItem, frequency: e.target.value })} />
                                         <input className="form-control" placeholder="Duration (e.g. 5 days)" value={newItem.duration} onChange={e => setNewItem({ ...newItem, duration: e.target.value })} />
+                                        <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                            <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Active Until (Optional)</span>
+                                            <input type="date" className="form-control" title="Active Until" value={newItem.active_until} min={new Date().toISOString().split('T')[0]} onChange={e => setNewItem({ ...newItem, active_until: e.target.value })} />
+                                        </div>
                                     </div>
                                     <div className="flex-between">
                                         <button className="btn-secondary" onClick={addRxItem}>+ Add Item</button>
@@ -350,7 +350,7 @@ const DoctorWorkbench = () => {
                                 </div>
                                 <div className="chat-input flex-between gap-1">
                                     <input className="form-control" placeholder="Type message..." value={newMessage} onChange={e => setNewMessage(e.target.value)} onKeyPress={e => e.key === 'Enter' && sendMessage()} />
-                                    <button className="btn-primary btn-icon" onClick={sendMessage}><Send size={18} /></button>
+                                    <button className="btn-primary btn-icon" aria-label="Send Message" onClick={sendMessage}><Send size={18} /></button>
                                 </div>
                             </div>
                         )}
