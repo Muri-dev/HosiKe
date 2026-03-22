@@ -1,0 +1,176 @@
+# Project Progress Report
+
+**Project Title:** HosiKe — Hospital Management System
+**Date:** March 3, 2026
+**Technology Stack:** Django REST Framework (Backend) · React + Vite (Frontend)
+
+---
+
+## 1. Project Overview
+
+HosiKe is a full-stack web-based **Hospital Management System** designed to digitise and streamline hospital workflows. The system supports four distinct user roles — **Admin, Doctor, Nurse, and Patient** — each with a tailored dashboard and dedicated functionality. The application uses JWT-based authentication to enforce role-based access control, ensuring that every user only sees and interacts with the resources relevant to their role.
+
+---
+
+## 2. Project Objectives
+
+| # | Objective | Status |
+|---|-----------|--------|
+| 1 | Implement secure, role-based authentication | ✅ Complete |
+| 2 | Build an Admin panel for hospital oversight | ✅ Complete |
+| 3 | Build a Doctor workbench for clinical workflows | ✅ Complete |
+| 4 | Build a Nurse dashboard for task & medication management | ✅ Complete |
+| 5 | Build a Patient portal for self-service access | ✅ Complete |
+| 6 | Implement appointment scheduling & management | ✅ Complete |
+| 7 | Implement in-hospital (inpatient) admission workflows | ✅ Complete |
+| 8 | Implement clinical messaging between staff | ✅ Complete |
+| 9 | Build remote patient monitoring via vitals | ✅ Complete |
+
+---
+
+## 3. Technology Stack
+
+| Layer | Technology |
+|-------|-----------|
+| **Backend** | Python 3, Django, Django REST Framework |
+| **Authentication** | JWT (via `djangorestframework-simplejwt`) |
+| **Frontend** | React 18, Vite, Axios |
+| **Database** | SQLite (development) |
+| **Routing** | React Router v6 |
+| **State / Auth** | React Context API |
+| **Cross-Origin** | `django-cors-headers` |
+
+---
+
+## 4. Completed Work
+
+### 4.1 Backend — Data Models
+
+The following database models have been designed and migrated:
+
+| Model | Purpose |
+|-------|---------|
+| [User](file:///c:/Users/USER/OneDrive/Desktop/Projects/HosiKe/backend/api/models.py#4-21) | Custom user with role field ([admin](file:///c:/Users/USER/OneDrive/Desktop/Projects/HosiKe/backend/api/models.py#17-18), [doctor](file:///c:/Users/USER/OneDrive/Desktop/Projects/HosiKe/backend/api/models.py#15-16), [nurse](file:///c:/Users/USER/OneDrive/Desktop/Projects/HosiKe/backend/api/models.py#16-17), [patient](file:///c:/Users/USER/OneDrive/Desktop/Projects/HosiKe/backend/api/models.py#14-15)) |
+| [PatientProfile](file:///c:/Users/USER/OneDrive/Desktop/Projects/HosiKe/backend/api/models.py#22-36) | Patient demographics — DOB, gender, blood group, contact, address |
+| [DoctorProfile](file:///c:/Users/USER/OneDrive/Desktop/Projects/HosiKe/backend/api/models.py#37-46) | Specialization, department, license, bio |
+| [NurseProfile](file:///c:/Users/USER/OneDrive/Desktop/Projects/HosiKe/backend/api/models.py#47-53) | Department, phone number |
+| [Appointment](file:///c:/Users/USER/OneDrive/Desktop/Projects/HosiKe/backend/api/models.py#54-76) | Full appointment lifecycle with multi-status workflow |
+| [Vital](file:///c:/Users/USER/OneDrive/Desktop/Projects/HosiKe/backend/api/models.py#77-91) | Patient vitals recorded by nurses (temp, BP, HR, weight, symptoms) |
+| [Consultation](file:///c:/Users/USER/OneDrive/Desktop/Projects/HosiKe/backend/api/models.py#92-106) | Doctor clinical notes — diagnosis, treatment plan, follow-up |
+| [Prescription](file:///c:/Users/USER/OneDrive/Desktop/Projects/HosiKe/backend/api/models.py#107-110) & [PrescriptionItem](file:///c:/Users/USER/OneDrive/Desktop/Projects/HosiKe/backend/api/models.py#111-133) | Structured medication prescriptions with administration tracking |
+| [NurseTask](file:///c:/Users/USER/OneDrive/Desktop/Projects/HosiKe/backend/api/models.py#134-161) | Nurse to-do tasks assigned by doctors with priority levels |
+| [Conversation](file:///c:/Users/USER/OneDrive/Desktop/Projects/HosiKe/backend/api/models.py#162-169) & [Message](file:///c:/Users/USER/OneDrive/Desktop/Projects/HosiKe/backend/api/models.py#170-182) | In-app messaging between staff |
+| [Admission](file:///c:/Users/USER/OneDrive/Desktop/Projects/HosiKe/backend/api/models.py#185-199) | Inpatient admission records with ward and bed assignment |
+| [NurseShift](file:///c:/Users/USER/OneDrive/Desktop/Projects/HosiKe/backend/api/models.py#200-209) | Nurse shift scheduling per ward |
+| [InpatientOrder](file:///c:/Users/USER/OneDrive/Desktop/Projects/HosiKe/backend/api/models.py#210-227) & [MedicationItem](file:///c:/Users/USER/OneDrive/Desktop/Projects/HosiKe/backend/api/models.py#228-238) | Doctor-created medication/lab orders for admitted patients |
+| [MedicationSchedule](file:///c:/Users/USER/OneDrive/Desktop/Projects/HosiKe/backend/api/models.py#239-260) | Structured scheduling and administration tracking of medications |
+
+### 4.2 Backend — REST API Endpoints
+
+The following API groups have been implemented and are fully functional:
+
+- **Authentication** — Login (`/auth/login/`), token refresh, `/me/` profile
+- **Admin APIs** — Dashboard overview, user management, appointment management, shift management, remote vitals monitoring, inpatient order review, remote referrals
+- **Doctor APIs** — Dashboard stats, appointment management, workbench (consultations, prescriptions), inpatient orders, remote vitals monitoring
+- **Nurse APIs** — Patient queue, vitals recording, task management, prescription administration, medication schedule queue
+- **Patient APIs** — Profile view/edit, appointment booking and cancellation, vitals history, prescriptions, admission status, medical history
+- **Messaging** — Conversation and message management
+- **Utility** — User search, avatar upload, notifications
+
+### 4.3 Frontend — Pages & Components
+
+**Authentication**
+- Login page with JWT token storage and role-based redirect
+- Protected route component that guards all dashboard pages
+
+**Admin Dashboard** (`/admin/`)
+- Overview dashboard with system-wide statistics
+- Full **User Management** (create, edit, deactivate users)
+- **Appointment Management** (view, reassign, update status)
+- **Admissions** management panel
+- **Inpatient Orders** review and approval
+- **Remote Referrals / Monitoring** panel
+- **Reports** section
+
+**Doctor Dashboard** (`/doctor/`)
+- Overview dashboard with personal stats (today's appointments, pending vitals, etc.)
+- **Doctor Workbench** — Full clinical consultation interface: vitals review, clinical notes, diagnosis, treatment plan, prescription builder
+- **Appointment Management** — Accept/reject appointments, manage schedule
+- **Inpatients** — View admitted patients and manage their orders
+- **Remote Monitoring** — Review vitals submitted by remote patients
+- **Doctor Requests** — Manage pending patient requests
+- **Messaging** — In-app messaging with colleagues
+- **Patient History** — Complete patient record view
+
+**Nurse Dashboard** (`/nurse/`)
+- Overview dashboard with queue and task summary
+- **Medications panel** — Medication schedule queue with administration tracking
+- **Prescriptions Panel** — Review and action active prescriptions
+
+**Patient Dashboard** (`/patient/`)
+- Comprehensive tabbed portal featuring:
+  - My Appointments (book, view, cancel)
+  - My Vitals history
+  - My Prescriptions
+  - My Admission status
+  - My Medical History
+  - Profile editing modal (`PatientProfileEditModal`)
+
+**Shared Components**
+- Reusable [Layout.jsx](file:///c:/Users/USER/OneDrive/Desktop/Projects/HosiKe/frontend/src/components/Layout.jsx) with collapsible sidebar and role-aware navigation
+- `Spinner`, `ProtectedRoute`, and other common UI components
+
+---
+
+## 5. Current Project Status
+
+> **Overall Completion: ~90%**
+
+The core system is fully functional end-to-end. All four role dashboards are implemented, connected to the backend, and verified to work with demo accounts. The application can be run locally with:
+
+```bash
+# Backend
+cd backend && python manage.py runserver
+
+# Frontend
+cd frontend && npm run dev
+```
+
+Demo accounts are seeded via `python manage.py seed_data`:
+
+| Role | Username | Password |
+|------|----------|----------|
+| Admin | admin1 | pass1234 |
+| Doctor | doctor1 | pass1234 |
+| Nurse | nurse1 | pass1234 |
+| Patient | patient1 | pass1234 |
+
+---
+
+## 6. Challenges Encountered
+
+| Challenge | Resolution |
+|-----------|------------|
+| JWT token refresh on expired sessions | Implemented Axios interceptor to auto-refresh tokens |
+| Role-based routing with React Router | Built `ProtectedRoute` component that reads user role and redirects accordingly |
+| Nested serializer validation for prescriptions | Fixed `InpatientOrderSerializer` to handle nested `medication_items` correctly |
+| Managing complex appointment state machine | Defined explicit status choices and transitions at the model level |
+| Real-time messaging without WebSockets | Implemented polling-based message refresh in the chat UI |
+| Inpatient medication scheduling | Designed a [MedicationSchedule](file:///c:/Users/USER/OneDrive/Desktop/Projects/HosiKe/backend/api/models.py#239-260) model linked to [MedicationItem](file:///c:/Users/USER/OneDrive/Desktop/Projects/HosiKe/backend/api/models.py#228-238) for granular tracking |
+
+---
+
+## 7. Next Steps / Remaining Work
+
+- [ ] Finalize and polish the **Reports** dashboard with charts and data export
+- [ ] Complete end-to-end testing across all role workflows
+- [ ] Add input validation and user-facing error messages to all forms
+- [ ] Improve mobile responsiveness of complex tables and forms
+- [ ] Prepare project documentation and final presentation slides
+- [ ] (Optional) Replace the SQLite database with PostgreSQL for a more production-like deployment
+
+---
+
+## 8. Conclusion
+
+Significant progress has been made on the HosiKe Hospital Management System. The foundational architecture — a Django REST backend with a React frontend — is solid and scalable. All core modules across all four user roles are implemented and functional. The remaining work is primarily focused on polishing, testing, and documentation ahead of the final submission.
