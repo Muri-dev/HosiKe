@@ -11,6 +11,7 @@ import Toast from '../../components/common/Toast';
 import ErrorBanner from '../../components/common/ErrorBanner';
 import PatientProfileEditModal from './PatientProfileEditModal';
 import MessagingPage from '../messaging/MessagingPage';
+import MedicationReminders from './MedicationReminders';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 // ── helpers ────────────────────────────────────────────────────────────────
@@ -122,7 +123,7 @@ export default function PatientDashboard() {
 
     // Book appointment
     const [showBook, setShowBook] = useState(false);
-    const [bookData, setBookData] = useState({ date: '', time: '', reason: '' });
+    const [bookData, setBookData] = useState({ date: '', time: '', reason: '', urgency: 'normal' });
     const [booking, setBooking] = useState(false);
 
     // Cancel appointment
@@ -180,10 +181,11 @@ export default function PatientDashboard() {
             await api.post('/appointments/book/', {
                 date_time: `${bookData.date}T${bookData.time}:00`,
                 reason: bookData.reason,
+                urgency: bookData.urgency,
             });
             showToast('Appointment booked successfully!');
             setShowBook(false);
-            setBookData({ date: '', time: '', reason: '' });
+            setBookData({ date: '', time: '', reason: '', urgency: 'normal' });
             fetchAll();
         } catch (err) {
             showToast(err.response?.data?.detail || 'Failed to book appointment.', 'error');
@@ -335,7 +337,11 @@ export default function PatientDashboard() {
 
             {/* ══════════ SUMMARY ═════════════════════════════════════ */}
             {activeTab === 'summary' && (
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.25rem' }}>
+                <div>
+                    {/* Medication Reminders — shown only when patient has active prescriptions */}
+                    <MedicationReminders />
+
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.25rem' }}>
 
                     {/* Next Appointment */}
                     <Card>
@@ -428,6 +434,7 @@ export default function PatientDashboard() {
                             </div>
                         ) : <Empty icon={Pill} message="No active prescriptions" />}
                     </Card>
+                    </div>
                 </div>
             )}
 
@@ -439,24 +446,38 @@ export default function PatientDashboard() {
                         <button style={btnPrimary} onClick={() => setShowBook(true)}><Plus size={16} /> Book New</button>
                     </div>
 
-                    {loading ? <Card><Skeleton /></Card> : appointments.length === 0
+                        {loading ? <Card><Skeleton /></Card> : appointments.length === 0
                         ? <Card><Empty icon={Calendar} message="No appointments yet. Book your first one!" /></Card>
                         : (
                             <Card style={{ padding: 0, overflow: 'hidden' }}>
                                 <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.88rem' }}>
                                     <thead>
                                         <tr style={{ background: '#f8fafc', borderBottom: '1px solid #e2e8f0' }}>
-                                            {['Date & Time', 'Doctor', 'Reason', 'Status', 'Actions'].map(h => (
+                                            {['Date & Time', 'Doctor', 'Reason', 'Urgency', 'Status', 'Actions'].map(h => (
                                                 <th key={h} style={{ padding: '0.75rem 1rem', textAlign: 'left', fontWeight: 700, color: '#475569', fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.04em' }}>{h}</th>
                                             ))}
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {appointments.map((a, i) => (
-                                            <tr key={a.id} style={{ borderBottom: '1px solid #f1f5f9', background: i % 2 ? '#fafafe' : '#fff' }}>
-                                                <td style={{ padding: '0.8rem 1rem', fontWeight: 600 }}>{fmt(a.date_time)}</td>
+                                        {appointments.map((a, i) => {
+                                            const urgencyColors = { emergency: '#dc2626', urgent: '#ea580c', normal: '#16a34a' };
+                                            const urgencyColor = urgencyColors[a.urgency] || '#16a34a';
+                                            return (
+                                            <tr key={a.id} style={{ borderBottom: '1px solid #f1f5f9', background: a.urgency === 'emergency' ? `rgba(220,38,38,0.04)` : i % 2 ? '#fafafe' : '#fff' }}>
+                                                <td style={{ padding: '0.8rem 1rem', fontWeight: 600, borderLeft: `3px solid ${urgencyColor}` }}>{fmt(a.date_time)}</td>
                                                 <td style={{ padding: '0.8rem 1rem', color: '#475569' }}>{a.doctor_name ? `Dr. ${a.doctor_name}` : 'Pending'}</td>
                                                 <td style={{ padding: '0.8rem 1rem', color: '#475569', maxWidth: 180, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{a.reason}</td>
+                                                <td style={{ padding: '0.8rem 1rem' }}>
+                                                    <span style={{
+                                                        color: urgencyColor, fontWeight: 700, fontSize: '0.75rem',
+                                                        textTransform: 'uppercase', letterSpacing: '0.04em',
+                                                        background: urgencyColor + '15', border: `1px solid ${urgencyColor}`,
+                                                        borderRadius: '1rem', padding: '0.1rem 0.5rem',
+                                                        display: 'inline-block',
+                                                    }}>
+                                                        {a.urgency || 'normal'}
+                                                    </span>
+                                                </td>
                                                 <td style={{ padding: '0.8rem 1rem' }}><Badge label={a.status} /></td>
                                                 <td style={{ padding: '0.8rem 1rem' }}>
                                                     {['pending', 'pending_approval', 'approved'].includes(a.status) && (
@@ -467,7 +488,8 @@ export default function PatientDashboard() {
                                                     )}
                                                 </td>
                                             </tr>
-                                        ))}
+                                            );
+                                        })}
                                     </tbody>
                                 </table>
                             </Card>
@@ -649,6 +671,9 @@ export default function PatientDashboard() {
                         <h3 style={{ margin: 0 }}>Prescriptions</h3>
                     </div>
 
+                    {/* Medication reminder inline in prescriptions tab */}
+                    <MedicationReminders />
+
                     {loading ? <Card><Skeleton /></Card> : scripts.length === 0
                         ? <Card><Empty icon={Pill} message="No prescriptions issued yet" /></Card>
                         : scripts.map(rx => (
@@ -782,6 +807,34 @@ export default function PatientDashboard() {
                         <textarea required rows={4} style={{ ...inputSt, resize: 'vertical' }} value={bookData.reason}
                             placeholder="Briefly describe your symptoms or reason for the visit…"
                             onChange={e => setBookData(b => ({ ...b, reason: e.target.value }))} />
+                    </div>
+
+                    {/* Urgency selector */}
+                    <div style={{ marginBottom: '1.25rem' }}>
+                        <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 600, color: '#64748b', marginBottom: '0.35rem' }}>How urgent is this visit?</label>
+                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '0.6rem' }}>
+                            {[
+                                { value: 'normal', emoji: '🟢', label: 'Normal', desc: 'Routine check-up or non-urgent concern', color: '#16a34a' },
+                                { value: 'urgent', emoji: '🟠', label: 'Urgent', desc: 'Needs attention soon (within hours)', color: '#ea580c' },
+                                { value: 'emergency', emoji: '🔴', label: 'Emergency', desc: 'Severe pain, injury or sudden illness', color: '#dc2626' },
+                            ].map(opt => (
+                                <button
+                                    key={opt.value}
+                                    type="button"
+                                    onClick={() => setBookData(b => ({ ...b, urgency: opt.value }))}
+                                    style={{
+                                        padding: '0.7rem 0.6rem', borderRadius: 10, cursor: 'pointer',
+                                        border: `2px solid ${bookData.urgency === opt.value ? opt.color : '#e2e8f0'}`,
+                                        background: bookData.urgency === opt.value ? opt.color + '10' : '#fff',
+                                        textAlign: 'center', transition: 'all 0.15s',
+                                    }}
+                                >
+                                    <div style={{ fontSize: '1.2rem', marginBottom: '0.15rem' }}>{opt.emoji}</div>
+                                    <div style={{ fontWeight: 700, fontSize: '0.82rem', color: bookData.urgency === opt.value ? opt.color : '#1e293b' }}>{opt.label}</div>
+                                    <div style={{ fontSize: '0.7rem', color: '#94a3b8', marginTop: '0.1rem', lineHeight: 1.3 }}>{opt.desc}</div>
+                                </button>
+                            ))}
+                        </div>
                     </div>
                     <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem' }}>
                         <button type="button" onClick={() => setShowBook(false)} style={btnSecondary}>Cancel</button>

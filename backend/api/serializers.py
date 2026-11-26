@@ -1,10 +1,22 @@
 from rest_framework import serializers
-from .models import User, PatientProfile, DoctorProfile, NurseProfile, Appointment, Vital, Consultation, Prescription, PrescriptionItem, Conversation, Message, NurseTask, Admission, InpatientOrder, MedicationItem, MedicationSchedule, NurseShift, AuditLog
+from .models import User, PatientProfile, DoctorProfile, NurseProfile, Appointment, Vital, Consultation, Prescription, PrescriptionItem, Conversation, Message, NurseTask, Admission, InpatientOrder, MedicationItem, MedicationSchedule, NurseShift, AuditLog, RemoteMonitoring
 
 class UserSerializer(serializers.ModelSerializer):
+    is_on_duty = serializers.SerializerMethodField()
+
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'role', 'first_name', 'last_name', 'is_active', 'avatar']
+        fields = ['id', 'username', 'email', 'role', 'first_name', 'last_name', 'is_active', 'avatar', 'is_on_duty']
+
+    def get_is_on_duty(self, obj):
+        try:
+            if obj.role == 'doctor':
+                return obj.doctor_profile.is_on_duty
+            elif obj.role == 'nurse':
+                return obj.nurse_profile.is_on_duty
+        except Exception:
+            pass
+        return None
 
 class PatientProfileSerializer(serializers.ModelSerializer):
     class Meta:
@@ -124,7 +136,7 @@ class AppointmentSerializer(serializers.ModelSerializer):
 class CreateAppointmentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Appointment
-        fields = ['date_time', 'reason', 'notes']
+        fields = ['date_time', 'reason', 'notes', 'urgency']
 
 class CreateUserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
@@ -181,8 +193,9 @@ class ConversationSerializer(serializers.ModelSerializer):
         fields = ['id', 'participants', 'messages', 'last_message', 'created_at', 'updated_at']
 
     def get_last_message(self, obj):
-        last_msg = obj.messages.order_by('-created_at').first()
-        if last_msg:
+        msgs = list(obj.messages.all())
+        if msgs:
+            last_msg = msgs[-1]
             return f"{last_msg.sender.username}: {last_msg.content[:30]}..."
         return None
 
@@ -210,6 +223,11 @@ class MedicationScheduleSerializer(serializers.ModelSerializer):
     patient_name = serializers.CharField(source='medication_item.order.admission.patient.username', read_only=True)
     ward = serializers.CharField(source='medication_item.order.admission.ward', read_only=True)
     bed = serializers.CharField(source='medication_item.order.admission.bed_number', read_only=True)
+    morning = serializers.BooleanField(source='medication_item.morning', read_only=True)
+    afternoon = serializers.BooleanField(source='medication_item.afternoon', read_only=True)
+    evening = serializers.BooleanField(source='medication_item.evening', read_only=True)
+    start_date = serializers.DateTimeField(source='medication_item.order.created_at', read_only=True)
+    duration_days = serializers.IntegerField(source='medication_item.duration_days', read_only=True)
 
     class Meta:
         model = MedicationSchedule
@@ -294,7 +312,7 @@ class PatientAdmissionSerializer(serializers.ModelSerializer):
 class PatientPrescriptionItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = PrescriptionItem
-        fields = ['id', 'medicine_name', 'dosage', 'frequency', 'duration', 'route', 'instructions', 'status']
+        fields = ['id', 'medicine_name', 'dosage', 'frequency', 'duration', 'route', 'instructions', 'status', 'active_until', 'morning', 'afternoon', 'evening']
 
 class PatientPrescriptionSerializer(serializers.ModelSerializer):
     items       = PatientPrescriptionItemSerializer(many=True, read_only=True)
@@ -371,3 +389,179 @@ class AuditLogSerializer(serializers.ModelSerializer):
             return None
         full = f"{obj.patient.first_name} {obj.patient.last_name}".strip()
         return full or obj.patient.username
+
+
+class AdminAdmissionSerializer(serializers.ModelSerializer):
+    """Rich serializer for admin admission detail view — includes patient info, NOK, meds, allocation."""
+    patient_full_name = serializers.SerializerMethodField()
+    patient_username = serializers.CharField(source='patient.username', read_only=True)
+    patient_email = serializers.CharField(source='patient.email', read_only=True)
+    patient_phone = serializers.SerializerMethodField()
+    patient_gender = serializers.SerializerMethodField()
+    patient_dob = serializers.SerializerMethodField()
+    patient_blood_group = serializers.SerializerMethodField()
+    patient_address = serializers.SerializerMethodField()
+    nok_name = serializers.SerializerMethodField()
+    nok_relationship = serializers.SerializerMethodField()
+    nok_phone = serializers.SerializerMethodField()
+    doctor_name = serializers.SerializerMethodField()
+    nurse_name = serializers.SerializerMethodField()
+    medications = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Admission
+        fields = [
+            'id', 'ward', 'bed_number', 'status', 'admitted_at', 'discharged_at', 'notes',
+            'patient_full_name', 'patient_username', 'patient_email',
+            'patient_phone', 'patient_gender', 'patient_dob', 'patient_blood_group', 'patient_address',
+            'nok_name', 'nok_relationship', 'nok_phone',
+            'doctor_name', 'nurse_name', 'medications',
+        ]
+
+    def _profile(self, obj):
+        try: return obj.patient.patient_profile
+        except Exception: return None
+
+    def get_patient_full_name(self, obj):
+        return f"{obj.patient.first_name} {obj.patient.last_name}".strip() or obj.patient.username
+
+    def get_patient_phone(self, obj):
+        p = self._profile(obj); return p.contact_number if p else None
+
+    def get_patient_gender(self, obj):
+        p = self._profile(obj); return p.gender if p else None
+
+    def get_patient_dob(self, obj):
+        p = self._profile(obj); return p.date_of_birth if p else None
+
+    def get_patient_blood_group(self, obj):
+        p = self._profile(obj); return p.blood_group if p else None
+
+    def get_patient_address(self, obj):
+        p = self._profile(obj); return p.address if p else None
+
+    def get_nok_name(self, obj):
+        p = self._profile(obj); return p.next_of_kin_name if p else None
+
+    def get_nok_relationship(self, obj):
+        p = self._profile(obj); return p.next_of_kin_relationship if p else None
+
+    def get_nok_phone(self, obj):
+        p = self._profile(obj); return p.next_of_kin_phone if p else None
+
+    def get_doctor_name(self, obj):
+        if obj.admitting_doctor:
+            full = f"{obj.admitting_doctor.first_name} {obj.admitting_doctor.last_name}".strip()
+            return full or obj.admitting_doctor.username
+        return None
+
+    def get_nurse_name(self, obj):
+        if obj.assigned_nurse:
+            full = f"{obj.assigned_nurse.first_name} {obj.assigned_nurse.last_name}".strip()
+            return full or obj.assigned_nurse.username
+        return None
+
+    def get_medications(self, obj):
+        """Return active prescription items for this patient."""
+        from django.utils import timezone
+        from django.db.models import Q
+        today = timezone.now().date()
+        items = PrescriptionItem.objects.filter(
+            prescription__consultation__appointment__patient=obj.patient,
+            status='active',
+        ).filter(Q(active_until__isnull=True) | Q(active_until__gte=today))
+        return [
+            {
+                'id': i.id,
+                'medicine_name': i.medicine_name,
+                'dosage': i.dosage,
+                'frequency': i.frequency,
+                'route': i.route,
+                'instructions': i.instructions,
+                'active_until': i.active_until,
+                'administered': i.administered,
+            }
+            for i in items
+        ]
+
+
+class RemoteMonitoringSerializer(serializers.ModelSerializer):
+    patient_full_name = serializers.SerializerMethodField()
+    patient_username = serializers.CharField(source='patient.username', read_only=True)
+    patient_email = serializers.CharField(source='patient.email', read_only=True)
+    patient_phone = serializers.SerializerMethodField()
+    patient_address = serializers.SerializerMethodField()
+    patient_blood_group = serializers.SerializerMethodField()
+    nok_name = serializers.SerializerMethodField()
+    nok_phone = serializers.SerializerMethodField()
+    nok_relationship = serializers.SerializerMethodField()
+    doctor_name = serializers.SerializerMethodField()
+    enrolled_by_name = serializers.SerializerMethodField()
+    latest_vitals = serializers.SerializerMethodField()
+
+    class Meta:
+        model = RemoteMonitoring
+        fields = [
+            'id', 'active', 'enrolled_at', 'notes',
+            'patient_full_name', 'patient_username', 'patient_email',
+            'patient_phone', 'patient_address', 'patient_blood_group',
+            'nok_name', 'nok_phone', 'nok_relationship',
+            'doctor_name', 'enrolled_by_name',
+            'latest_vitals',
+            'patient', 'assigned_doctor',
+        ]
+        read_only_fields = ['enrolled_at', 'enrolled_by']
+
+    def _profile(self, obj):
+        try: return obj.patient.patient_profile
+        except Exception: return None
+
+    def get_patient_full_name(self, obj):
+        return f"{obj.patient.first_name} {obj.patient.last_name}".strip() or obj.patient.username
+
+    def get_patient_phone(self, obj):
+        p = self._profile(obj); return p.contact_number if p else None
+
+    def get_patient_address(self, obj):
+        p = self._profile(obj); return p.address if p else None
+
+    def get_patient_blood_group(self, obj):
+        p = self._profile(obj); return p.blood_group if p else None
+
+    def get_nok_name(self, obj):
+        p = self._profile(obj); return p.next_of_kin_name if p else None
+
+    def get_nok_phone(self, obj):
+        p = self._profile(obj); return p.next_of_kin_phone if p else None
+
+    def get_nok_relationship(self, obj):
+        p = self._profile(obj); return p.next_of_kin_relationship if p else None
+
+    def get_doctor_name(self, obj):
+        if obj.assigned_doctor:
+            full = f"{obj.assigned_doctor.first_name} {obj.assigned_doctor.last_name}".strip()
+            return full or obj.assigned_doctor.username
+        return None
+
+    def get_enrolled_by_name(self, obj):
+        if obj.enrolled_by:
+            return f"{obj.enrolled_by.first_name} {obj.enrolled_by.last_name}".strip() or obj.enrolled_by.username
+        return None
+
+    def get_latest_vitals(self, obj):
+        vitals = Vital.objects.filter(patient=obj.patient).order_by('-created_at')[:5]
+        return [
+            {
+                'id': v.id,
+                'temperature': v.temperature,
+                'blood_pressure': v.blood_pressure,
+                'heart_rate': v.heart_rate,
+                'weight': v.weight,
+                'symptoms': v.symptoms,
+                'status': v.status,
+                'doctor_feedback': v.doctor_feedback,
+                'feedback_date': v.feedback_date,
+                'created_at': v.created_at,
+            }
+            for v in vitals
+        ]

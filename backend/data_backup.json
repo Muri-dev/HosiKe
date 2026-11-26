@@ -1,0 +1,1959 @@
+[
+{
+  "model": "api.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$oEjvmtaArMBsbpgbAfpcKb$+yj11Eara8qv5WMGUH2MkNsSVDl6/mFUSPXdVFuoeGE=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "admin1",
+    "first_name": "Super",
+    "last_name": "Admin",
+    "email": "admin@hospital.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-02-16T13:57:22.786Z",
+    "role": "admin",
+    "avatar": "avatars/dp.jpeg",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "api.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$kn1VLkyYHEKzOviD6vmVgh$T2ADfM91s5MouLVocyVgWogqP83Gx9gzTDCBcR8mOZ4=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "doctor1",
+    "first_name": "Gregory",
+    "last_name": "Juma",
+    "email": "doctor@hospital.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-02-16T13:57:24.361Z",
+    "role": "doctor",
+    "avatar": "",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "api.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$77rMP5SriIPYzc8666bWGi$xKo++B8UVlNiNNsA18akIZaZPQt7JpPWCrR6rSVkiQo=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "nurse1",
+    "first_name": "Victoria",
+    "last_name": "Wambui",
+    "email": "nurse@hospital.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-02-16T13:57:25.949Z",
+    "role": "nurse",
+    "avatar": "",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "api.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$Fi26btYTmzrsmtf163gkuC$6hkmJudvNeP2jZQgYGEt7vAQ71PVOMzs8jeTOQOpsQ8=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "patient1",
+    "first_name": "Mike",
+    "last_name": "Myles",
+    "email": "patient@hospital.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-02-16T13:57:27.543Z",
+    "role": "patient",
+    "avatar": "",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "api.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$NBolGIxGqcSLCCg8xlpaLh$A6zIcKdiYsODaOOEZ7HcfBsvTrnnThQD6PCMRq1xXNo=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "patient2",
+    "first_name": "Sam",
+    "last_name": "Maina",
+    "email": "sam@gmail.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-02-16T14:14:45.089Z",
+    "role": "patient",
+    "avatar": "",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "api.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$TTYtiMtJJbFBISD4yqnYID$xBQ0t/Va/Gja7QHYW8DyXqG0/sf5pb+o+1kpnHAlaKA=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "doctor2",
+    "first_name": "Dr",
+    "last_name": "Maina",
+    "email": "maina@gmail.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-02-16T15:28:11.064Z",
+    "role": "doctor",
+    "avatar": "",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "api.user",
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$mHOK1R7t5IHvJXF0964w99$ZGRuBFDT/2iaHdC4n6xFDPPr4ZtQfl7iqNZ4Gkavj4U=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "patient3",
+    "first_name": "pat",
+    "last_name": "pate",
+    "email": "pate@gmail.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-02-20T11:54:54.982Z",
+    "role": "patient",
+    "avatar": "",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "api.patientprofile",
+  "pk": 1,
+  "fields": {
+    "user": [
+      "patient1"
+    ],
+    "date_of_birth": "1990-01-01",
+    "gender": "",
+    "blood_group": "",
+    "contact_number": "",
+    "address": "123 Baker St",
+    "next_of_kin_name": null,
+    "next_of_kin_relationship": null,
+    "next_of_kin_phone": null
+  }
+},
+{
+  "model": "api.doctorprofile",
+  "pk": 1,
+  "fields": {
+    "user": [
+      "doctor1"
+    ],
+    "specialization": "Diagnostic Medicine",
+    "department": "Diagnostics",
+    "license_number": null,
+    "phone": null,
+    "bio": null,
+    "is_on_duty": false
+  }
+},
+{
+  "model": "api.nurseprofile",
+  "pk": 1,
+  "fields": {
+    "user": [
+      "nurse1"
+    ],
+    "department": "General",
+    "phone": null,
+    "is_on_duty": true
+  }
+},
+{
+  "model": "api.appointment",
+  "pk": 1,
+  "fields": {
+    "patient": [
+      "patient1"
+    ],
+    "assigned_doctor": [
+      "doctor1"
+    ],
+    "assigned_nurse": [
+      "nurse1"
+    ],
+    "date_time": "2026-02-17T13:57:30.113Z",
+    "reason": "Checkup",
+    "notes": "",
+    "status": "approved",
+    "urgency": "normal",
+    "created_at": "2026-02-16T13:57:30.117Z"
+  }
+},
+{
+  "model": "api.appointment",
+  "pk": 2,
+  "fields": {
+    "patient": [
+      "patient1"
+    ],
+    "assigned_doctor": [
+      "doctor1"
+    ],
+    "assigned_nurse": [
+      "nurse1"
+    ],
+    "date_time": "2026-02-15T13:57:30.113Z",
+    "reason": "Flu",
+    "notes": "",
+    "status": "completed",
+    "urgency": "normal",
+    "created_at": "2026-02-16T13:57:30.125Z"
+  }
+},
+{
+  "model": "api.appointment",
+  "pk": 3,
+  "fields": {
+    "patient": [
+      "patient1"
+    ],
+    "assigned_doctor": [
+      "doctor2"
+    ],
+    "assigned_nurse": null,
+    "date_time": "2026-02-17T12:20:00Z",
+    "reason": "private check up with Dr Maina",
+    "notes": "",
+    "status": "completed",
+    "urgency": "normal",
+    "created_at": "2026-02-16T15:26:15.688Z"
+  }
+},
+{
+  "model": "api.appointment",
+  "pk": 4,
+  "fields": {
+    "patient": [
+      "patient1"
+    ],
+    "assigned_doctor": [
+      "doctor2"
+    ],
+    "assigned_nurse": [
+      "nurse1"
+    ],
+    "date_time": "2026-02-18T12:00:00Z",
+    "reason": "private",
+    "notes": "private",
+    "status": "cancelled",
+    "urgency": "normal",
+    "created_at": "2026-02-16T15:54:04.608Z"
+  }
+},
+{
+  "model": "api.appointment",
+  "pk": 5,
+  "fields": {
+    "patient": [
+      "patient1"
+    ],
+    "assigned_doctor": [
+      "doctor2"
+    ],
+    "assigned_nurse": [
+      "nurse1"
+    ],
+    "date_time": "2026-02-18T12:00:00Z",
+    "reason": "Private",
+    "notes": "private",
+    "status": "approved",
+    "urgency": "normal",
+    "created_at": "2026-02-17T08:24:47.853Z"
+  }
+},
+{
+  "model": "api.appointment",
+  "pk": 6,
+  "fields": {
+    "patient": [
+      "patient1"
+    ],
+    "assigned_doctor": [
+      "doctor1"
+    ],
+    "assigned_nurse": null,
+    "date_time": "2026-03-14T09:00:00Z",
+    "reason": "Flu, discomfort",
+    "notes": "",
+    "status": "approved",
+    "urgency": "normal",
+    "created_at": "2026-03-10T06:58:31.907Z"
+  }
+},
+{
+  "model": "api.appointment",
+  "pk": 7,
+  "fields": {
+    "patient": [
+      "patient1"
+    ],
+    "assigned_doctor": [
+      "doctor2"
+    ],
+    "assigned_nurse": null,
+    "date_time": "2026-04-11T11:00:00Z",
+    "reason": "Reschedule",
+    "notes": "Appointment",
+    "status": "approved",
+    "urgency": "normal",
+    "created_at": "2026-03-22T10:23:20.023Z"
+  }
+},
+{
+  "model": "api.appointment",
+  "pk": 8,
+  "fields": {
+    "patient": [
+      "patient1"
+    ],
+    "assigned_doctor": [
+      "doctor1"
+    ],
+    "assigned_nurse": null,
+    "date_time": "2026-05-04T09:00:00Z",
+    "reason": "Argent",
+    "notes": "",
+    "status": "approved",
+    "urgency": "normal",
+    "created_at": "2026-03-25T07:10:53.873Z"
+  }
+},
+{
+  "model": "api.appointment",
+  "pk": 9,
+  "fields": {
+    "patient": [
+      "patient1"
+    ],
+    "assigned_doctor": [
+      "doctor1"
+    ],
+    "assigned_nurse": null,
+    "date_time": "2026-05-21T09:30:00Z",
+    "reason": "Discomfort",
+    "notes": "Not available",
+    "status": "cancelled",
+    "urgency": "normal",
+    "created_at": "2026-03-25T07:21:29.235Z"
+  }
+},
+{
+  "model": "api.appointment",
+  "pk": 10,
+  "fields": {
+    "patient": [
+      "patient1"
+    ],
+    "assigned_doctor": [
+      "doctor1"
+    ],
+    "assigned_nurse": null,
+    "date_time": "2026-05-21T09:30:00Z",
+    "reason": "Several headache",
+    "notes": "Argent",
+    "status": "pending",
+    "urgency": "normal",
+    "created_at": "2026-03-25T07:39:48.179Z"
+  }
+},
+{
+  "model": "api.appointment",
+  "pk": 11,
+  "fields": {
+    "patient": [
+      "patient1"
+    ],
+    "assigned_doctor": [
+      "doctor1"
+    ],
+    "assigned_nurse": null,
+    "date_time": "2026-03-28T05:30:00Z",
+    "reason": "Pain",
+    "notes": "",
+    "status": "completed",
+    "urgency": "urgent",
+    "created_at": "2026-03-25T19:43:29.360Z"
+  }
+},
+{
+  "model": "api.appointment",
+  "pk": 12,
+  "fields": {
+    "patient": [
+      "patient1"
+    ],
+    "assigned_doctor": null,
+    "assigned_nurse": null,
+    "date_time": "2026-04-12T11:00:00Z",
+    "reason": "High Blood pressure",
+    "notes": "",
+    "status": "pending",
+    "urgency": "urgent",
+    "created_at": "2026-03-27T09:29:54.338Z"
+  }
+},
+{
+  "model": "api.appointment",
+  "pk": 13,
+  "fields": {
+    "patient": [
+      "patient1"
+    ],
+    "assigned_doctor": null,
+    "assigned_nurse": null,
+    "date_time": "2026-03-27T11:49:00Z",
+    "reason": "ijp,o",
+    "notes": "",
+    "status": "pending",
+    "urgency": "normal",
+    "created_at": "2026-03-27T09:47:43.165Z"
+  }
+},
+{
+  "model": "api.appointment",
+  "pk": 14,
+  "fields": {
+    "patient": [
+      "patient1"
+    ],
+    "assigned_doctor": null,
+    "assigned_nurse": null,
+    "date_time": "2026-03-28T12:51:00Z",
+    "reason": "jjj",
+    "notes": "",
+    "status": "pending",
+    "urgency": "urgent",
+    "created_at": "2026-03-27T09:49:08.445Z"
+  }
+},
+{
+  "model": "api.appointment",
+  "pk": 15,
+  "fields": {
+    "patient": [
+      "patient1"
+    ],
+    "assigned_doctor": null,
+    "assigned_nurse": null,
+    "date_time": "2026-03-31T15:22:00Z",
+    "reason": "GJNL",
+    "notes": "",
+    "status": "pending",
+    "urgency": "emergency",
+    "created_at": "2026-03-27T11:21:27.658Z"
+  }
+},
+{
+  "model": "api.vital",
+  "pk": 1,
+  "fields": {
+    "patient": [
+      "patient1"
+    ],
+    "appointment": null,
+    "recorded_by": [
+      "nurse1"
+    ],
+    "temperature": 36.6,
+    "blood_pressure": "120/80",
+    "heart_rate": 72,
+    "weight": 70.5,
+    "symptoms": "",
+    "assigned_to": [
+      "doctor1"
+    ],
+    "status": "assigned",
+    "doctor_feedback": null,
+    "feedback_date": null,
+    "created_at": "2026-02-16T13:57:30.134Z"
+  }
+},
+{
+  "model": "api.vital",
+  "pk": 2,
+  "fields": {
+    "patient": [
+      "patient1"
+    ],
+    "appointment": 1,
+    "recorded_by": [
+      "nurse1"
+    ],
+    "temperature": 27.0,
+    "blood_pressure": "120/80",
+    "heart_rate": 78,
+    "weight": 65.0,
+    "symptoms": "flu",
+    "assigned_to": [
+      "doctor2"
+    ],
+    "status": "reviewed",
+    "doctor_feedback": "fdfh",
+    "feedback_date": "2026-03-24T21:07:04.407Z",
+    "created_at": "2026-02-17T09:11:35.917Z"
+  }
+},
+{
+  "model": "api.vital",
+  "pk": 3,
+  "fields": {
+    "patient": [
+      "patient1"
+    ],
+    "appointment": null,
+    "recorded_by": [
+      "patient1"
+    ],
+    "temperature": 32.0,
+    "blood_pressure": "121/80",
+    "heart_rate": 77,
+    "weight": 69.0,
+    "symptoms": "headache",
+    "assigned_to": [
+      "doctor2"
+    ],
+    "status": "reviewed",
+    "doctor_feedback": "book apointment",
+    "feedback_date": "2026-02-17T14:42:38.740Z",
+    "created_at": "2026-02-17T09:39:01.184Z"
+  }
+},
+{
+  "model": "api.vital",
+  "pk": 4,
+  "fields": {
+    "patient": [
+      "patient1"
+    ],
+    "appointment": null,
+    "recorded_by": [
+      "patient1"
+    ],
+    "temperature": 34.0,
+    "blood_pressure": "119/80",
+    "heart_rate": 77,
+    "weight": 69.0,
+    "symptoms": "",
+    "assigned_to": [
+      "doctor2"
+    ],
+    "status": "reviewed",
+    "doctor_feedback": "xtxtx",
+    "feedback_date": "2026-03-22T10:25:30.343Z",
+    "created_at": "2026-03-08T10:28:58.502Z"
+  }
+},
+{
+  "model": "api.vital",
+  "pk": 5,
+  "fields": {
+    "patient": [
+      "patient1"
+    ],
+    "appointment": 1,
+    "recorded_by": [
+      "nurse1"
+    ],
+    "temperature": 38.0,
+    "blood_pressure": "123/80",
+    "heart_rate": 75,
+    "weight": 69.0,
+    "symptoms": "Headache",
+    "assigned_to": null,
+    "status": "reviewed",
+    "doctor_feedback": "getting better....avoid sugars",
+    "feedback_date": "2026-03-24T19:19:27.197Z",
+    "created_at": "2026-03-11T18:12:39.232Z"
+  }
+},
+{
+  "model": "api.consultation",
+  "pk": 1,
+  "fields": {
+    "appointment": 3,
+    "doctor": [
+      "doctor2"
+    ],
+    "chief_complaint": "Asthma",
+    "diagnosis": "Prescription Only",
+    "clinical_notes": "Getting better",
+    "treatment_plan": "clinic every week",
+    "lab_results": null,
+    "follow_up_notes": null,
+    "created_at": "2026-02-16T17:43:17.746Z",
+    "updated_at": "2026-02-17T08:48:37.421Z",
+    "prescription_text": null
+  }
+},
+{
+  "model": "api.consultation",
+  "pk": 2,
+  "fields": {
+    "appointment": 7,
+    "doctor": [
+      "doctor2"
+    ],
+    "chief_complaint": "FFFF",
+    "diagnosis": "TB",
+    "clinical_notes": "FGGF",
+    "treatment_plan": "TRTRT",
+    "lab_results": null,
+    "follow_up_notes": null,
+    "created_at": "2026-03-22T10:36:34.535Z",
+    "updated_at": "2026-03-22T11:21:57.135Z",
+    "prescription_text": null
+  }
+},
+{
+  "model": "api.consultation",
+  "pk": 3,
+  "fields": {
+    "appointment": 11,
+    "doctor": [
+      "doctor1"
+    ],
+    "chief_complaint": "Flu, high BP",
+    "diagnosis": "BP",
+    "clinical_notes": "High BP, FLU",
+    "treatment_plan": "Home medication",
+    "lab_results": "",
+    "follow_up_notes": "",
+    "created_at": "2026-03-28T20:34:07.337Z",
+    "updated_at": "2026-03-28T20:36:27.119Z",
+    "prescription_text": null
+  }
+},
+{
+  "model": "api.prescription",
+  "pk": 1,
+  "fields": {
+    "consultation": 1,
+    "created_at": "2026-02-16T17:43:17.779Z"
+  }
+},
+{
+  "model": "api.prescription",
+  "pk": 2,
+  "fields": {
+    "consultation": 2,
+    "created_at": "2026-03-22T10:36:34.574Z"
+  }
+},
+{
+  "model": "api.prescription",
+  "pk": 3,
+  "fields": {
+    "consultation": 3,
+    "created_at": "2026-03-28T20:34:46.656Z"
+  }
+},
+{
+  "model": "api.prescriptionitem",
+  "pk": 1,
+  "fields": {
+    "prescription": 1,
+    "medicine_name": "xdxd",
+    "dosage": "10",
+    "duration": 10,
+    "morning": false,
+    "afternoon": false,
+    "evening": false,
+    "route": "Oral",
+    "instructions": "",
+    "status": "active",
+    "discontinued_reason": null,
+    "active_until": null,
+    "administered": true,
+    "administered_by": [
+      "nurse1"
+    ],
+    "administered_at": "2026-02-16T20:09:30.994Z"
+  }
+},
+{
+  "model": "api.prescriptionitem",
+  "pk": 2,
+  "fields": {
+    "prescription": 2,
+    "medicine_name": "ANTITB",
+    "dosage": "1*3",
+    "duration": 10,
+    "morning": false,
+    "afternoon": false,
+    "evening": false,
+    "route": "Oral",
+    "instructions": "",
+    "status": "active",
+    "discontinued_reason": null,
+    "active_until": null,
+    "administered": true,
+    "administered_by": [
+      "nurse1"
+    ],
+    "administered_at": "2026-03-24T16:54:22.646Z"
+  }
+},
+{
+  "model": "api.prescriptionitem",
+  "pk": 3,
+  "fields": {
+    "prescription": 1,
+    "medicine_name": "igliu",
+    "dosage": "10ml",
+    "duration": 10,
+    "morning": true,
+    "afternoon": false,
+    "evening": true,
+    "route": "PO",
+    "instructions": "",
+    "status": "active",
+    "discontinued_reason": null,
+    "active_until": "2026-04-03",
+    "administered": false,
+    "administered_by": null,
+    "administered_at": null
+  }
+},
+{
+  "model": "api.prescriptionitem",
+  "pk": 4,
+  "fields": {
+    "prescription": 1,
+    "medicine_name": "ukfku",
+    "dosage": "12",
+    "duration": 1,
+    "morning": true,
+    "afternoon": false,
+    "evening": true,
+    "route": "PO",
+    "instructions": "",
+    "status": "active",
+    "discontinued_reason": null,
+    "active_until": "2026-03-25",
+    "administered": false,
+    "administered_by": null,
+    "administered_at": null
+  }
+},
+{
+  "model": "api.prescriptionitem",
+  "pk": 5,
+  "fields": {
+    "prescription": 1,
+    "medicine_name": "xsdxds",
+    "dosage": "15g",
+    "duration": 10,
+    "morning": true,
+    "afternoon": true,
+    "evening": true,
+    "route": "PO",
+    "instructions": "",
+    "status": "active",
+    "discontinued_reason": null,
+    "active_until": "2026-04-04",
+    "administered": false,
+    "administered_by": null,
+    "administered_at": null
+  }
+},
+{
+  "model": "api.prescriptionitem",
+  "pk": 6,
+  "fields": {
+    "prescription": 3,
+    "medicine_name": "anti pressure",
+    "dosage": "10g",
+    "duration": 1,
+    "morning": true,
+    "afternoon": false,
+    "evening": true,
+    "route": "Oral",
+    "instructions": "NA",
+    "status": "active",
+    "discontinued_reason": null,
+    "active_until": "2026-03-29",
+    "administered": false,
+    "administered_by": null,
+    "administered_at": null
+  }
+},
+{
+  "model": "api.nursetask",
+  "pk": 1,
+  "fields": {
+    "appointment": 3,
+    "doctor": [
+      "doctor2"
+    ],
+    "task_type": "Observation",
+    "details": "after meals",
+    "priority": "normal",
+    "status": "pending",
+    "completed_by": null,
+    "completed_at": null,
+    "created_at": "2026-02-17T08:48:18.526Z",
+    "updated_at": "2026-02-17T08:48:18.526Z"
+  }
+},
+{
+  "model": "api.nursetask",
+  "pk": 2,
+  "fields": {
+    "appointment": 7,
+    "doctor": [
+      "doctor2"
+    ],
+    "task_type": "Observation",
+    "details": "HEALTHY MEALS",
+    "priority": "normal",
+    "status": "pending",
+    "completed_by": null,
+    "completed_at": null,
+    "created_at": "2026-03-22T10:36:58.727Z",
+    "updated_at": "2026-03-22T10:36:58.727Z"
+  }
+},
+{
+  "model": "api.conversation",
+  "pk": 1,
+  "fields": {
+    "created_at": "2026-02-16T17:25:21.600Z",
+    "updated_at": "2026-03-04T06:13:48.032Z",
+    "participants": [
+      [
+        "patient1"
+      ],
+      [
+        "doctor2"
+      ]
+    ]
+  }
+},
+{
+  "model": "api.conversation",
+  "pk": 2,
+  "fields": {
+    "created_at": "2026-02-17T15:23:42.207Z",
+    "updated_at": "2026-03-25T07:07:30.478Z",
+    "participants": [
+      [
+        "admin1"
+      ],
+      [
+        "doctor2"
+      ]
+    ]
+  }
+},
+{
+  "model": "api.conversation",
+  "pk": 3,
+  "fields": {
+    "created_at": "2026-02-17T15:38:43.129Z",
+    "updated_at": "2026-02-17T19:31:26.673Z",
+    "participants": [
+      [
+        "admin1"
+      ],
+      [
+        "nurse1"
+      ]
+    ]
+  }
+},
+{
+  "model": "api.conversation",
+  "pk": 4,
+  "fields": {
+    "created_at": "2026-02-18T11:39:14.228Z",
+    "updated_at": "2026-02-18T11:39:14.228Z",
+    "participants": [
+      [
+        "nurse1"
+      ],
+      [
+        "doctor2"
+      ]
+    ]
+  }
+},
+{
+  "model": "api.conversation",
+  "pk": 5,
+  "fields": {
+    "created_at": "2026-02-18T16:50:44.118Z",
+    "updated_at": "2026-03-11T18:20:06.053Z",
+    "participants": [
+      [
+        "doctor1"
+      ],
+      [
+        "patient1"
+      ]
+    ]
+  }
+},
+{
+  "model": "api.conversation",
+  "pk": 6,
+  "fields": {
+    "created_at": "2026-03-03T15:57:27.367Z",
+    "updated_at": "2026-03-25T07:08:19.989Z",
+    "participants": [
+      [
+        "admin1"
+      ],
+      [
+        "doctor1"
+      ]
+    ]
+  }
+},
+{
+  "model": "api.message",
+  "pk": 1,
+  "fields": {
+    "conversation": 1,
+    "sender": [
+      "patient1"
+    ],
+    "content": "hello daktari",
+    "is_read": true,
+    "created_at": "2026-02-17T15:22:17.399Z"
+  }
+},
+{
+  "model": "api.message",
+  "pk": 2,
+  "fields": {
+    "conversation": 1,
+    "sender": [
+      "doctor2"
+    ],
+    "content": "hELLO",
+    "is_read": true,
+    "created_at": "2026-02-17T15:23:11.048Z"
+  }
+},
+{
+  "model": "api.message",
+  "pk": 3,
+  "fields": {
+    "conversation": 2,
+    "sender": [
+      "doctor2"
+    ],
+    "content": "I'm available",
+    "is_read": true,
+    "created_at": "2026-02-17T15:24:05.291Z"
+  }
+},
+{
+  "model": "api.message",
+  "pk": 4,
+  "fields": {
+    "conversation": 2,
+    "sender": [
+      "admin1"
+    ],
+    "content": "patient2 allocated",
+    "is_read": true,
+    "created_at": "2026-02-17T15:32:17.774Z"
+  }
+},
+{
+  "model": "api.message",
+  "pk": 5,
+  "fields": {
+    "conversation": 3,
+    "sender": [
+      "admin1"
+    ],
+    "content": "ward 2b",
+    "is_read": true,
+    "created_at": "2026-02-17T15:38:55.011Z"
+  }
+},
+{
+  "model": "api.message",
+  "pk": 6,
+  "fields": {
+    "conversation": 3,
+    "sender": [
+      "nurse1"
+    ],
+    "content": "noted",
+    "is_read": true,
+    "created_at": "2026-02-17T19:31:26.648Z"
+  }
+},
+{
+  "model": "api.message",
+  "pk": 7,
+  "fields": {
+    "conversation": 1,
+    "sender": [
+      "patient1"
+    ],
+    "content": "Hi doctor Maina",
+    "is_read": true,
+    "created_at": "2026-02-18T11:29:56.535Z"
+  }
+},
+{
+  "model": "api.message",
+  "pk": 8,
+  "fields": {
+    "conversation": 1,
+    "sender": [
+      "patient1"
+    ],
+    "content": "habari",
+    "is_read": true,
+    "created_at": "2026-02-18T16:50:20.718Z"
+  }
+},
+{
+  "model": "api.message",
+  "pk": 9,
+  "fields": {
+    "conversation": 5,
+    "sender": [
+      "patient1"
+    ],
+    "content": "hello",
+    "is_read": true,
+    "created_at": "2026-02-18T16:50:48.428Z"
+  }
+},
+{
+  "model": "api.message",
+  "pk": 10,
+  "fields": {
+    "conversation": 5,
+    "sender": [
+      "doctor1"
+    ],
+    "content": "Njema",
+    "is_read": true,
+    "created_at": "2026-02-18T16:51:17.473Z"
+  }
+},
+{
+  "model": "api.message",
+  "pk": 11,
+  "fields": {
+    "conversation": 5,
+    "sender": [
+      "doctor1"
+    ],
+    "content": "Real time",
+    "is_read": true,
+    "created_at": "2026-02-18T16:51:36.185Z"
+  }
+},
+{
+  "model": "api.message",
+  "pk": 12,
+  "fields": {
+    "conversation": 5,
+    "sender": [
+      "patient1"
+    ],
+    "content": "fgcklifgtilogh;uieo",
+    "is_read": true,
+    "created_at": "2026-02-18T16:52:20.389Z"
+  }
+},
+{
+  "model": "api.message",
+  "pk": 13,
+  "fields": {
+    "conversation": 6,
+    "sender": [
+      "admin1"
+    ],
+    "content": "Hi Doc",
+    "is_read": true,
+    "created_at": "2026-03-03T15:57:36.570Z"
+  }
+},
+{
+  "model": "api.message",
+  "pk": 14,
+  "fields": {
+    "conversation": 6,
+    "sender": [
+      "doctor1"
+    ],
+    "content": "hello, how may I help you",
+    "is_read": true,
+    "created_at": "2026-03-03T15:58:03.770Z"
+  }
+},
+{
+  "model": "api.message",
+  "pk": 15,
+  "fields": {
+    "conversation": 1,
+    "sender": [
+      "patient1"
+    ],
+    "content": "Hello Doctor",
+    "is_read": true,
+    "created_at": "2026-03-04T06:13:22.882Z"
+  }
+},
+{
+  "model": "api.message",
+  "pk": 16,
+  "fields": {
+    "conversation": 1,
+    "sender": [
+      "patient1"
+    ],
+    "content": "Nimefaint mara tano leo≡ƒÿé≡ƒÿé",
+    "is_read": true,
+    "created_at": "2026-03-04T06:13:48.006Z"
+  }
+},
+{
+  "model": "api.message",
+  "pk": 17,
+  "fields": {
+    "conversation": 5,
+    "sender": [
+      "patient1"
+    ],
+    "content": "Niaje doc....leo ni mbaya",
+    "is_read": true,
+    "created_at": "2026-03-10T07:03:42.828Z"
+  }
+},
+{
+  "model": "api.message",
+  "pk": 18,
+  "fields": {
+    "conversation": 5,
+    "sender": [
+      "patient1"
+    ],
+    "content": "Hello Doc",
+    "is_read": true,
+    "created_at": "2026-03-11T18:18:32.074Z"
+  }
+},
+{
+  "model": "api.message",
+  "pk": 19,
+  "fields": {
+    "conversation": 5,
+    "sender": [
+      "doctor1"
+    ],
+    "content": "Rada Myles",
+    "is_read": true,
+    "created_at": "2026-03-11T18:20:06.016Z"
+  }
+},
+{
+  "model": "api.message",
+  "pk": 20,
+  "fields": {
+    "conversation": 2,
+    "sender": [
+      "admin1"
+    ],
+    "content": "Patient 2",
+    "is_read": false,
+    "created_at": "2026-03-25T07:07:30.452Z"
+  }
+},
+{
+  "model": "api.message",
+  "pk": 21,
+  "fields": {
+    "conversation": 6,
+    "sender": [
+      "doctor1"
+    ],
+    "content": "hello",
+    "is_read": true,
+    "created_at": "2026-03-25T07:08:19.969Z"
+  }
+},
+{
+  "model": "api.admission",
+  "pk": 1,
+  "fields": {
+    "patient": [
+      "patient1"
+    ],
+    "admitting_doctor": [
+      "doctor1"
+    ],
+    "assigned_nurse": null,
+    "ward": "ICU",
+    "bed_number": "101",
+    "status": "discharged",
+    "admitted_at": "2026-02-16T17:38:33.041Z",
+    "discharged_at": "2026-03-22T11:23:58.970Z",
+    "notes": ""
+  }
+},
+{
+  "model": "api.admission",
+  "pk": 2,
+  "fields": {
+    "patient": [
+      "patient3"
+    ],
+    "admitting_doctor": [
+      "doctor2"
+    ],
+    "assigned_nurse": [
+      "nurse1"
+    ],
+    "ward": "General",
+    "bed_number": "b12",
+    "status": "discharged",
+    "admitted_at": "2026-03-24T19:25:05.797Z",
+    "discharged_at": "2026-03-24T19:25:43.149Z",
+    "notes": "BP"
+  }
+},
+{
+  "model": "api.admission",
+  "pk": 3,
+  "fields": {
+    "patient": [
+      "patient3"
+    ],
+    "admitting_doctor": [
+      "doctor2"
+    ],
+    "assigned_nurse": [
+      "nurse1"
+    ],
+    "ward": "General",
+    "bed_number": "B32",
+    "status": "admitted",
+    "admitted_at": "2026-03-24T19:26:23.579Z",
+    "discharged_at": null,
+    "notes": "BP"
+  }
+},
+{
+  "model": "api.remotemonitoring",
+  "pk": 1,
+  "fields": {
+    "patient": [
+      "patient1"
+    ],
+    "assigned_doctor": [
+      "doctor2"
+    ],
+    "enrolled_by": [
+      "admin1"
+    ],
+    "enrolled_at": "2026-03-24T19:03:47.102Z",
+    "notes": "Wazimu",
+    "active": true
+  }
+},
+{
+  "model": "api.remotemonitoring",
+  "pk": 2,
+  "fields": {
+    "patient": [
+      "patient2"
+    ],
+    "assigned_doctor": null,
+    "enrolled_by": [
+      "admin1"
+    ],
+    "enrolled_at": "2026-03-24T19:22:33.904Z",
+    "notes": "Asthma",
+    "active": true
+  }
+},
+{
+  "model": "api.inpatientorder",
+  "pk": 1,
+  "fields": {
+    "admission": 1,
+    "doctor": [
+      "doctor2"
+    ],
+    "order_type": "medication",
+    "priority": "routine",
+    "status": "completed",
+    "notes": "Nurse allocated: Victoria Wambui",
+    "created_at": "2026-02-17T09:03:33.704Z"
+  }
+},
+{
+  "model": "api.inpatientorder",
+  "pk": 2,
+  "fields": {
+    "admission": 1,
+    "doctor": [
+      "doctor2"
+    ],
+    "order_type": "medication",
+    "priority": "routine",
+    "status": "completed",
+    "notes": "Nurse allocated: Victoria Wambui",
+    "created_at": "2026-02-18T15:04:20.344Z"
+  }
+},
+{
+  "model": "api.inpatientorder",
+  "pk": 3,
+  "fields": {
+    "admission": 3,
+    "doctor": [
+      "doctor2"
+    ],
+    "order_type": "medication",
+    "priority": "routine",
+    "status": "pending_review",
+    "notes": "",
+    "created_at": "2026-03-24T19:27:37.404Z"
+  }
+},
+{
+  "model": "api.inpatientorder",
+  "pk": 4,
+  "fields": {
+    "admission": 3,
+    "doctor": [
+      "doctor2"
+    ],
+    "order_type": "medication",
+    "priority": "routine",
+    "status": "pending_review",
+    "notes": "rydry",
+    "created_at": "2026-03-24T19:27:46.719Z"
+  }
+},
+{
+  "model": "api.inpatientorder",
+  "pk": 5,
+  "fields": {
+    "admission": 3,
+    "doctor": [
+      "doctor2"
+    ],
+    "order_type": "medication",
+    "priority": "routine",
+    "status": "pending_review",
+    "notes": "",
+    "created_at": "2026-03-25T05:49:26.577Z"
+  }
+},
+{
+  "model": "api.medicationitem",
+  "pk": 1,
+  "fields": {
+    "order": 1,
+    "medicine_name": "xc",
+    "dosage": "50g",
+    "route": "PO",
+    "morning": false,
+    "afternoon": false,
+    "evening": false,
+    "duration_days": 1,
+    "instructions": "",
+    "status": "active"
+  }
+},
+{
+  "model": "api.medicationitem",
+  "pk": 2,
+  "fields": {
+    "order": 2,
+    "medicine_name": "gege",
+    "dosage": "fdg",
+    "route": "PO",
+    "morning": false,
+    "afternoon": false,
+    "evening": false,
+    "duration_days": 1,
+    "instructions": "",
+    "status": "active"
+  }
+},
+{
+  "model": "api.medicationitem",
+  "pk": 3,
+  "fields": {
+    "order": 3,
+    "medicine_name": "XCXC",
+    "dosage": "20ml",
+    "route": "PO",
+    "morning": false,
+    "afternoon": false,
+    "evening": false,
+    "duration_days": 1,
+    "instructions": "",
+    "status": "active"
+  }
+},
+{
+  "model": "api.medicationitem",
+  "pk": 4,
+  "fields": {
+    "order": 4,
+    "medicine_name": "XCXC",
+    "dosage": "20ml",
+    "route": "PO",
+    "morning": false,
+    "afternoon": false,
+    "evening": false,
+    "duration_days": 1,
+    "instructions": "",
+    "status": "active"
+  }
+},
+{
+  "model": "api.medicationitem",
+  "pk": 5,
+  "fields": {
+    "order": 5,
+    "medicine_name": "XFSXFX",
+    "dosage": "10g",
+    "route": "PO",
+    "morning": true,
+    "afternoon": false,
+    "evening": true,
+    "duration_days": 5,
+    "instructions": "",
+    "status": "active"
+  }
+},
+{
+  "model": "api.medicationschedule",
+  "pk": 1,
+  "fields": {
+    "medication_item": 1,
+    "scheduled_time": "2026-02-17T09:02:00Z",
+    "assigned_nurse": [
+      "nurse1"
+    ],
+    "status": "administered",
+    "administered_at": "2026-02-17T19:52:08.789Z",
+    "administered_by": [
+      "nurse1"
+    ],
+    "notes": ""
+  }
+},
+{
+  "model": "api.medicationschedule",
+  "pk": 2,
+  "fields": {
+    "medication_item": 2,
+    "scheduled_time": "2026-02-18T11:41:00Z",
+    "assigned_nurse": [
+      "nurse1"
+    ],
+    "status": "administered",
+    "administered_at": "2026-03-24T16:52:27.969Z",
+    "administered_by": [
+      "nurse1"
+    ],
+    "notes": ""
+  }
+},
+{
+  "model": "api.medicationschedule",
+  "pk": 3,
+  "fields": {
+    "medication_item": 5,
+    "scheduled_time": "2026-03-25T05:00:00Z",
+    "assigned_nurse": null,
+    "status": "scheduled",
+    "administered_at": null,
+    "administered_by": null,
+    "notes": ""
+  }
+},
+{
+  "model": "api.medicationschedule",
+  "pk": 4,
+  "fields": {
+    "medication_item": 5,
+    "scheduled_time": "2026-03-25T17:00:00Z",
+    "assigned_nurse": null,
+    "status": "scheduled",
+    "administered_at": null,
+    "administered_by": null,
+    "notes": ""
+  }
+},
+{
+  "model": "api.medicationschedule",
+  "pk": 5,
+  "fields": {
+    "medication_item": 5,
+    "scheduled_time": "2026-03-26T05:00:00Z",
+    "assigned_nurse": null,
+    "status": "scheduled",
+    "administered_at": null,
+    "administered_by": null,
+    "notes": ""
+  }
+},
+{
+  "model": "api.medicationschedule",
+  "pk": 6,
+  "fields": {
+    "medication_item": 5,
+    "scheduled_time": "2026-03-26T17:00:00Z",
+    "assigned_nurse": null,
+    "status": "scheduled",
+    "administered_at": null,
+    "administered_by": null,
+    "notes": ""
+  }
+},
+{
+  "model": "api.medicationschedule",
+  "pk": 7,
+  "fields": {
+    "medication_item": 5,
+    "scheduled_time": "2026-03-27T05:00:00Z",
+    "assigned_nurse": null,
+    "status": "scheduled",
+    "administered_at": null,
+    "administered_by": null,
+    "notes": ""
+  }
+},
+{
+  "model": "api.medicationschedule",
+  "pk": 8,
+  "fields": {
+    "medication_item": 5,
+    "scheduled_time": "2026-03-27T17:00:00Z",
+    "assigned_nurse": null,
+    "status": "scheduled",
+    "administered_at": null,
+    "administered_by": null,
+    "notes": ""
+  }
+},
+{
+  "model": "api.medicationschedule",
+  "pk": 9,
+  "fields": {
+    "medication_item": 5,
+    "scheduled_time": "2026-03-28T05:00:00Z",
+    "assigned_nurse": null,
+    "status": "scheduled",
+    "administered_at": null,
+    "administered_by": null,
+    "notes": ""
+  }
+},
+{
+  "model": "api.medicationschedule",
+  "pk": 10,
+  "fields": {
+    "medication_item": 5,
+    "scheduled_time": "2026-03-28T17:00:00Z",
+    "assigned_nurse": null,
+    "status": "scheduled",
+    "administered_at": null,
+    "administered_by": null,
+    "notes": ""
+  }
+},
+{
+  "model": "api.medicationschedule",
+  "pk": 11,
+  "fields": {
+    "medication_item": 5,
+    "scheduled_time": "2026-03-29T05:00:00Z",
+    "assigned_nurse": null,
+    "status": "scheduled",
+    "administered_at": null,
+    "administered_by": null,
+    "notes": ""
+  }
+},
+{
+  "model": "api.medicationschedule",
+  "pk": 12,
+  "fields": {
+    "medication_item": 5,
+    "scheduled_time": "2026-03-29T17:00:00Z",
+    "assigned_nurse": null,
+    "status": "scheduled",
+    "administered_at": null,
+    "administered_by": null,
+    "notes": ""
+  }
+},
+{
+  "model": "api.auditlog",
+  "pk": 1,
+  "fields": {
+    "actor": [
+      "patient1"
+    ],
+    "action": "vital_recorded",
+    "patient": [
+      "patient1"
+    ],
+    "details": {
+      "vital_id": 4,
+      "assigned_to": "doctor2"
+    },
+    "ip_address": "127.0.0.1",
+    "timestamp": "2026-03-08T10:28:58.512Z"
+  }
+},
+{
+  "model": "api.auditlog",
+  "pk": 2,
+  "fields": {
+    "actor": [
+      "doctor1"
+    ],
+    "action": "appointment_status",
+    "patient": [
+      "patient1"
+    ],
+    "details": {
+      "appointment_id": 6,
+      "new_status": "approved"
+    },
+    "ip_address": "127.0.0.1",
+    "timestamp": "2026-03-10T06:59:34.766Z"
+  }
+},
+{
+  "model": "api.auditlog",
+  "pk": 3,
+  "fields": {
+    "actor": [
+      "nurse1"
+    ],
+    "action": "vital_recorded",
+    "patient": [
+      "patient1"
+    ],
+    "details": {
+      "vital_id": 5,
+      "appointment_id": 1
+    },
+    "ip_address": "127.0.0.1",
+    "timestamp": "2026-03-11T18:12:39.250Z"
+  }
+},
+{
+  "model": "api.auditlog",
+  "pk": 4,
+  "fields": {
+    "actor": [
+      "doctor2"
+    ],
+    "action": "feedback_submitted",
+    "patient": [
+      "patient1"
+    ],
+    "details": {
+      "vital_id": 4,
+      "feedback_preview": "xtxtx"
+    },
+    "ip_address": "127.0.0.1",
+    "timestamp": "2026-03-22T10:25:30.380Z"
+  }
+},
+{
+  "model": "api.auditlog",
+  "pk": 5,
+  "fields": {
+    "actor": [
+      "doctor2"
+    ],
+    "action": "prescription_added",
+    "patient": [
+      "patient1"
+    ],
+    "details": {
+      "appointment_id": 7,
+      "item_count": 1
+    },
+    "ip_address": "127.0.0.1",
+    "timestamp": "2026-03-22T10:36:34.597Z"
+  }
+},
+{
+  "model": "api.auditlog",
+  "pk": 6,
+  "fields": {
+    "actor": [
+      "doctor2"
+    ],
+    "action": "consultation_updated",
+    "patient": [
+      "patient1"
+    ],
+    "details": {
+      "appointment_id": 7
+    },
+    "ip_address": "127.0.0.1",
+    "timestamp": "2026-03-22T11:21:57.164Z"
+  }
+},
+{
+  "model": "api.auditlog",
+  "pk": 7,
+  "fields": {
+    "actor": [
+      "nurse1"
+    ],
+    "action": "medication_administered",
+    "patient": [
+      "patient1"
+    ],
+    "details": {
+      "schedule_id": 2,
+      "medicine": "gege",
+      "scheduled_time": "2026-02-18 11:41:00+00:00"
+    },
+    "ip_address": "127.0.0.1",
+    "timestamp": "2026-03-24T16:52:28.010Z"
+  }
+},
+{
+  "model": "api.auditlog",
+  "pk": 8,
+  "fields": {
+    "actor": [
+      "nurse1"
+    ],
+    "action": "medication_administered",
+    "patient": [
+      "patient1"
+    ],
+    "details": {
+      "prescription_item_id": 2,
+      "medicine": "ANTITB"
+    },
+    "ip_address": "127.0.0.1",
+    "timestamp": "2026-03-24T16:54:22.668Z"
+  }
+},
+{
+  "model": "api.auditlog",
+  "pk": 9,
+  "fields": {
+    "actor": [
+      "doctor2"
+    ],
+    "action": "doctor_vital_feedback_sent",
+    "patient": [
+      "patient1"
+    ],
+    "details": {
+      "vital_id": 5,
+      "monitoring_id": 1
+    },
+    "ip_address": "127.0.0.1",
+    "timestamp": "2026-03-24T19:19:27.235Z"
+  }
+},
+{
+  "model": "api.auditlog",
+  "pk": 10,
+  "fields": {
+    "actor": [
+      "admin1"
+    ],
+    "action": "patient_admitted",
+    "patient": [
+      "patient3"
+    ],
+    "details": {
+      "admission_id": 2,
+      "ward": "General",
+      "bed_number": "b12"
+    },
+    "ip_address": "127.0.0.1",
+    "timestamp": "2026-03-24T19:25:05.828Z"
+  }
+},
+{
+  "model": "api.auditlog",
+  "pk": 11,
+  "fields": {
+    "actor": [
+      "admin1"
+    ],
+    "action": "patient_discharged",
+    "patient": [
+      "patient3"
+    ],
+    "details": {
+      "admission_id": 2,
+      "ward": "General"
+    },
+    "ip_address": "127.0.0.1",
+    "timestamp": "2026-03-24T19:25:43.189Z"
+  }
+},
+{
+  "model": "api.auditlog",
+  "pk": 12,
+  "fields": {
+    "actor": [
+      "admin1"
+    ],
+    "action": "patient_admitted",
+    "patient": [
+      "patient3"
+    ],
+    "details": {
+      "admission_id": 3,
+      "ward": "General",
+      "bed_number": "B32"
+    },
+    "ip_address": "127.0.0.1",
+    "timestamp": "2026-03-24T19:26:23.609Z"
+  }
+},
+{
+  "model": "api.auditlog",
+  "pk": 13,
+  "fields": {
+    "actor": [
+      "doctor2"
+    ],
+    "action": "doctor_vital_feedback_sent",
+    "patient": [
+      "patient1"
+    ],
+    "details": {
+      "vital_id": 2,
+      "monitoring_id": 1
+    },
+    "ip_address": "127.0.0.1",
+    "timestamp": "2026-03-24T21:07:04.437Z"
+  }
+},
+{
+  "model": "api.auditlog",
+  "pk": 14,
+  "fields": {
+    "actor": [
+      "doctor1"
+    ],
+    "action": "appointment_status",
+    "patient": [
+      "patient1"
+    ],
+    "details": {
+      "appointment_id": 8,
+      "new_status": "approved"
+    },
+    "ip_address": "127.0.0.1",
+    "timestamp": "2026-03-25T07:19:36.140Z"
+  }
+},
+{
+  "model": "api.auditlog",
+  "pk": 15,
+  "fields": {
+    "actor": [
+      "doctor1"
+    ],
+    "action": "appointment_status",
+    "patient": [
+      "patient1"
+    ],
+    "details": {
+      "appointment_id": 11,
+      "new_status": "approved"
+    },
+    "ip_address": "127.0.0.1",
+    "timestamp": "2026-03-28T20:32:53.505Z"
+  }
+},
+{
+  "model": "api.auditlog",
+  "pk": 16,
+  "fields": {
+    "actor": [
+      "doctor1"
+    ],
+    "action": "consultation_created",
+    "patient": [
+      "patient1"
+    ],
+    "details": {
+      "appointment_id": 11
+    },
+    "ip_address": "127.0.0.1",
+    "timestamp": "2026-03-28T20:34:07.350Z"
+  }
+},
+{
+  "model": "api.auditlog",
+  "pk": 17,
+  "fields": {
+    "actor": [
+      "doctor1"
+    ],
+    "action": "prescription_added",
+    "patient": [
+      "patient1"
+    ],
+    "details": {
+      "appointment_id": 11,
+      "item_count": 1
+    },
+    "ip_address": "127.0.0.1",
+    "timestamp": "2026-03-28T20:34:46.690Z"
+  }
+},
+{
+  "model": "api.auditlog",
+  "pk": 18,
+  "fields": {
+    "actor": [
+      "doctor1"
+    ],
+    "action": "consultation_updated",
+    "patient": [
+      "patient1"
+    ],
+    "details": {
+      "appointment_id": 11
+    },
+    "ip_address": "127.0.0.1",
+    "timestamp": "2026-03-28T20:36:27.152Z"
+  }
+}
+]

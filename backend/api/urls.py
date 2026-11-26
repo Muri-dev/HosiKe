@@ -34,7 +34,16 @@ from .views import (
     PatientMyAdmissionView,
     PatientPrescriptionsView,
     PatientHistoryView,
+    PatientMedicationScheduleView,
     AuditLogView,
+    StaffAvailabilityView,
+    AdminRemotePatientsView,
+    AdminAdmitPatientView,
+    AdminAdmissionDetailView,
+    RemoteMonitoringViewSet,
+    DoctorRemoteMonitoringViewSet,
+    AIAssistantContextView,
+    AIAssistantChatView,
 )
 
 router = DefaultRouter()
@@ -50,8 +59,9 @@ router.register(r'inpatient-orders', InpatientOrderViewSet, basename='inpatient-
 router.register(r'admin/shifts', NurseShiftViewSet, basename='nurse-shifts')
 router.register(r'nurse/med-queue', MedicationScheduleViewSet, basename='med-queue')
 router.register(r'vitals', NurseVitalsViewSet, basename='vitals')
-router.register(r'doctor/remote-vitals', DoctorRemoteVitalsViewSet, basename='remote-vitals')
 router.register(r'admin/remote-vitals', AdminRemoteVitalsViewSet, basename='admin-remote-vitals')
+router.register(r'admin/remote-monitoring', RemoteMonitoringViewSet, basename='admin-remote-monitoring')
+router.register(r'doctor/remote-monitoring-patients', DoctorRemoteMonitoringViewSet, basename='doctor-remote-monitoring-patients')
 
 urlpatterns = [
     # Auth
@@ -62,10 +72,18 @@ urlpatterns = [
     path('admin/users/<int:user_id>/avatar/', UserAvatarView.as_view(), name='user-avatar'),
     path('search/users/', UserSearchView.as_view(), name='search-users'),
     path('notifications/', NotificationView.as_view(), name='notifications'),
+    path('ai/context/', AIAssistantContextView.as_view(), name='ai-context'),
+    path('ai/chat/', AIAssistantChatView.as_view(), name='ai-chat'),
 
     # Admin
     path('admin/overview/', AdminDashboardView.as_view(), name='admin-overview'),
     path('admin/audit-log/', AuditLogView.as_view(), name='audit-log'),
+    path('admin/remote-patients/', AdminRemotePatientsView.as_view(), name='admin-remote-patients'),
+    path('admin/admit/', AdminAdmitPatientView.as_view(), name='admin-admit-patient'),
+    path('admin/admissions/<int:pk>/detail/', AdminAdmissionDetailView.as_view(), name='admin-admission-detail'),
+
+    # Staff
+    path('me/availability/', StaffAvailabilityView.as_view(), name='staff-availability'),
     
     # Doctor
     path('doctor/dashboard/', DoctorDashboardView.as_view(), name='doctor-dashboard'),
@@ -84,6 +102,8 @@ urlpatterns = [
     path('patient/prescriptions/mine/', PatientPrescriptionsView.as_view(), name='patient-prescriptions'),
     path('patient/history/', PatientHistoryView.as_view(), name='patient-history'),
     path('patient/vitals/mine/', PatientVitalsView.as_view(), name='patient-vitals'),
+    path('patient/med-schedule/', PatientMedicationScheduleView.as_view(), name='patient-med-schedule'),
+    path('patient/med-schedule/<int:item_id>/self-administer/', PatientMedicationScheduleView.as_view(), name='patient-med-self-administer'),
     path('appointments/book/', PatientAppointmentViewSet.as_view({'post': 'create'}), name='book-appointment'),
     path('appointments/mine/', PatientAppointmentViewSet.as_view({'get': 'list'}), name='my-appointments'),
     path('appointments/<int:pk>/cancel/', PatientAppointmentViewSet.as_view({'patch': 'cancel'}), name='cancel-appointment'),

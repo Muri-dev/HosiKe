@@ -25,7 +25,7 @@ const DoctorWorkbench = () => {
 
     // Rx & Tasks State
     const [prescriptionItems, setPrescriptionItems] = useState([]);
-    const [newItem, setNewItem] = useState({ medicine_name: '', dosage: '', route: 'Oral', frequency: '', duration: '', active_until: '', instructions: '' });
+    const [newItem, setNewItem] = useState({ medicine_name: '', dosage: '', route: 'Oral', duration: 1, morning: true, afternoon: false, evening: true, instructions: '' });
     const [tasks, setTasks] = useState([]);
     const [newTask, setNewTask] = useState({ task_type: 'Observation', details: '', priority: 'normal' });
 
@@ -112,7 +112,7 @@ const DoctorWorkbench = () => {
     const addRxItem = () => {
         if (!newItem.medicine_name) return setToast({ message: "Medicine Name required", type: 'error' });
         setPrescriptionItems([...prescriptionItems, newItem]);
-        setNewItem({ medicine_name: '', dosage: '', route: 'Oral', frequency: '', duration: '', active_until: '', instructions: '' });
+        setNewItem({ medicine_name: '', dosage: '', route: 'Oral', duration: 1, morning: true, afternoon: false, evening: true, instructions: '' });
     };
 
     const saveRx = async () => {
@@ -261,17 +261,20 @@ const DoctorWorkbench = () => {
                                     <h4 className="mb-1">Current Prescriptions</h4>
                                     {prescriptionItems.length === 0 ? <p className="text-muted">No items added.</p> : (
                                         <table className="data-table">
-                                            <thead><tr><th>Drug</th><th>Dose</th><th>Route</th><th>Freq</th><th>Status</th></tr></thead>
+                                            <thead><tr><th>Drug</th><th>Dose</th><th>Route</th><th>Schedule</th><th>Status</th></tr></thead>
                                             <tbody>
-                                                {prescriptionItems.map((item, i) => (
-                                                    <tr key={i}>
-                                                        <td>{item.medicine_name}</td>
-                                                        <td>{item.dosage}</td>
-                                                        <td>{item.route}</td>
-                                                        <td>{item.frequency}</td>
-                                                        <td><span className={`badge badge-${item.status === 'active' ? 'success' : 'secondary'}`}>{item.status}</span></td>
-                                                    </tr>
-                                                ))}
+                                                {prescriptionItems.map((item, i) => {
+                                                    const schedStr = [item.morning ? 'Morning' : null, item.afternoon ? 'Afternoon' : null, item.evening ? 'Evening' : null].filter(Boolean).join(', ') || 'PRN';
+                                                    return (
+                                                        <tr key={i}>
+                                                            <td>{item.medicine_name}</td>
+                                                            <td>{item.dosage}</td>
+                                                            <td>{item.route}</td>
+                                                            <td><span className="text-primary font-medium">[{schedStr}]</span> ({item.duration} days)</td>
+                                                            <td><span className={`badge badge-${item.status === 'active' ? 'success' : 'secondary'}`}>{item.status}</span></td>
+                                                        </tr>
+                                                    )
+                                                })}
                                             </tbody>
                                         </table>
                                     )}
@@ -285,13 +288,15 @@ const DoctorWorkbench = () => {
                                             <option>Oral</option><option>IV</option><option>IM</option><option>Sublingual</option>
                                         </select>
                                     </div>
-                                    <div className="grid-3 gap-1 mb-1">
-                                        <input className="form-control" placeholder="Frequency (e.g. BID)" value={newItem.frequency} onChange={e => setNewItem({ ...newItem, frequency: e.target.value })} />
-                                        <input className="form-control" placeholder="Duration (e.g. 5 days)" value={newItem.duration} onChange={e => setNewItem({ ...newItem, duration: e.target.value })} />
-                                        <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                            <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>Active Until (Optional)</span>
-                                            <input type="date" className="form-control" title="Active Until" value={newItem.active_until} min={new Date().toISOString().split('T')[0]} onChange={e => setNewItem({ ...newItem, active_until: e.target.value })} />
-                                        </div>
+                                    <div className="grid-2 gap-1 mb-0_5">
+                                        <input className="form-control" type="number" min="1" placeholder="Duration (Days)" value={newItem.duration} onChange={e => setNewItem({ ...newItem, duration: parseInt(e.target.value) || 1 })} />
+                                        <input className="form-control" placeholder="Special Instructions..." value={newItem.instructions} onChange={e => setNewItem({ ...newItem, instructions: e.target.value })} />
+                                    </div>
+                                    <label className="text-sm font-medium mb-0_5 block mt-0_5">Schedule Timeline</label>
+                                    <div className="flex-start gap-1 mb-1 p-0_5 bg-white border rounded">
+                                        <label className="flex-start gap-0_5" style={{ cursor: 'pointer' }}><input type="checkbox" checked={newItem.morning} onChange={e => setNewItem({...newItem, morning: e.target.checked})} /> Morning</label>
+                                        <label className="flex-start gap-0_5" style={{ cursor: 'pointer' }}><input type="checkbox" checked={newItem.afternoon} onChange={e => setNewItem({...newItem, afternoon: e.target.checked})} /> Afternoon</label>
+                                        <label className="flex-start gap-0_5" style={{ cursor: 'pointer' }}><input type="checkbox" checked={newItem.evening} onChange={e => setNewItem({...newItem, evening: e.target.checked})} /> Evening</label>
                                     </div>
                                     <div className="flex-between">
                                         <button className="btn-secondary" onClick={addRxItem}>+ Add Item</button>

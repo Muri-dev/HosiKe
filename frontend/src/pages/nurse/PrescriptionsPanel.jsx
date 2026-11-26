@@ -57,6 +57,7 @@ const PrescriptionsPanel = () => {
             <DataTable
                 columns={columns}
                 data={prescriptions}
+                isLoading={loading}
             />
         </div>
     );

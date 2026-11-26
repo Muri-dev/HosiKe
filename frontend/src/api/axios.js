@@ -19,7 +19,14 @@ api.interceptors.request.use(
 );
 
 api.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    const method = (response.config?.method || '').toLowerCase();
+    const url = response.config?.url || '';
+    if (['post', 'put', 'patch', 'delete'].includes(method) && !url.includes('/ai/chat') && !url.includes('/auth/')) {
+      window.dispatchEvent(new CustomEvent('hosike:data-updated', { detail: { url, method } }));
+    }
+    return response;
+  },
   async (error) => {
     const originalRequest = error.config;
 

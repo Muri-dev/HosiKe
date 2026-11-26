@@ -1,0 +1,21 @@
+# Environment secrets
+.env
+backend/.env
+.env.local
+.env.*.local
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+**/*.pyc
+**/__pycache__/
+venv/
+.venv/
+
+# Local SQLite backups
+*.sqlite3.bak
+
+# Frontend
+frontend/node_modules/
+frontend/dist/

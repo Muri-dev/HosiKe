@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import api from '../../api/axios';
-import { Calendar, User, UserPlus, CheckCircle, Clock, Filter, Eye, X, Plus } from 'lucide-react';
+import { Calendar, User, UserPlus, CheckCircle, Clock, Filter, Eye, X, Plus, Zap, AlertTriangle } from 'lucide-react';
 import DataTable from '../../components/common/DataTable';
 import Modal from '../../components/common/Modal';
 import Toast from '../../components/common/Toast';
@@ -17,6 +17,7 @@ const AppointmentsPage = () => {
         date_from: '',
         date_to: '',
         doctor_id: '',
+        urgency: 'all',
         search: ''
     });
 
@@ -39,7 +40,8 @@ const AppointmentsPage = () => {
         date_time: '',
         reason: '',
         notes: '',
-        status: 'pending'
+        status: 'pending',
+        urgency: 'normal',
     });
     // Patient search for create modal
     const [patientSearch, setPatientSearch] = useState('');
@@ -57,6 +59,7 @@ const AppointmentsPage = () => {
             if (filters.date_to) params.append('date_to', filters.date_to);
             if (filters.doctor_id) params.append('doctor_id', filters.doctor_id);
             if (filters.search) params.append('search', filters.search);
+            if (filters.urgency && filters.urgency !== 'all') params.append('urgency', filters.urgency);
 
             const response = await api.get(url + params.toString());
             setAppointments(response.data);
@@ -142,7 +145,8 @@ const AppointmentsPage = () => {
                 date_time: '',
                 reason: '',
                 notes: '',
-                status: 'pending'
+                status: 'pending',
+                urgency: 'normal',
             });
             setPatientSearch('');
             fetchAppointments();
@@ -198,9 +202,29 @@ const AppointmentsPage = () => {
         }
     };
 
+    const URGENCY_STYLES = {
+        emergency: { color: '#dc2626', icon: <Zap size={13} style={{ display:'inline', marginRight:'3px' }} /> },
+        urgent:    { color: '#ea580c', icon: <AlertTriangle size={13} style={{ display:'inline', marginRight:'3px' }} /> },
+        normal:    { color: '#16a34a', icon: null },
+    };
+
+    const UrgencyCell = ({ urgency = 'normal' }) => {
+        const cfg = URGENCY_STYLES[urgency] || URGENCY_STYLES.normal;
+        return (
+            <span style={{
+                color: cfg.color, fontWeight: 600, fontSize: '0.8rem',
+                textTransform: 'uppercase', letterSpacing: '0.04em',
+                display: 'inline-flex', alignItems: 'center',
+            }}>
+                {cfg.icon}{urgency}
+            </span>
+        );
+    };
+
     const columns = [
         { header: 'Date & Time', render: (row) => new Date(row.date_time).toLocaleString() },
         { header: 'Patient', accessor: 'patient_name' },
+        { header: 'Urgency', render: (row) => <UrgencyCell urgency={row.urgency} /> },
         { header: 'Doctor', render: (row) => row.doctor_name || <button className="btn-xs btn-outline" onClick={() => openAssignModal(row, 'doctor')}>Assign Dr.</button> },
         { header: 'Nurse', render: (row) => row.nurse_name || <button className="btn-xs btn-outline" onClick={() => openAssignModal(row, 'nurse')}>Assign Nurse</button> },
         { header: 'Status', render: (row) => <span className={`status ${row.status}`}>{row.status.replace('_', ' ')}</span> },
@@ -248,6 +272,15 @@ const AppointmentsPage = () => {
                     <option value="cancelled">Cancelled</option>
                 </select>
                 <select
+                    value={filters.urgency} onChange={e => setFilters({ ...filters, urgency: e.target.value })}
+                    style={{ padding: '0.5rem', border: '1px solid var(--border-color)', borderRadius: 'var(--radius)' }}
+                >
+                    <option value="all">All Urgencies</option>
+                    <option value="emergency">🔴 Emergency</option>
+                    <option value="urgent">🟠 Urgent</option>
+                    <option value="normal">🟢 Normal</option>
+                </select>
+                <select
                     value={filters.doctor_id} onChange={e => setFilters({ ...filters, doctor_id: e.target.value })}
                     style={{ padding: '0.5rem', border: '1px solid var(--border-color)', borderRadius: 'var(--radius)' }}
                 >
@@ -264,6 +297,7 @@ const AppointmentsPage = () => {
                 <DataTable
                     columns={columns}
                     data={appointments}
+                    isLoading={loading}
                 />
             </div>
 
@@ -375,12 +409,25 @@ const AppointmentsPage = () => {
                             </select>
                         </div>
                         <div className="form-group">
-                            <label>Internal Notes</label>
-                            <input
-                                value={createForm.notes}
-                                onChange={e => setCreateForm({ ...createForm, notes: e.target.value })}
-                            />
+                            <label>Urgency Level</label>
+                            <select
+                                className="form-control"
+                                value={createForm.urgency}
+                                onChange={e => setCreateForm({ ...createForm, urgency: e.target.value })}
+                            >
+                                <option value="normal">🟢 Normal</option>
+                                <option value="urgent">🟠 Urgent</option>
+                                <option value="emergency">🔴 Emergency</option>
+                            </select>
                         </div>
+                    </div>
+
+                    <div className="form-group">
+                        <label>Internal Notes</label>
+                        <input
+                            value={createForm.notes}
+                            onChange={e => setCreateForm({ ...createForm, notes: e.target.value })}
+                        />
                     </div>
 
                     <div className="flex-between" style={{ marginTop: '1.5rem', justifyContent: 'flex-end', gap: '1rem' }}>

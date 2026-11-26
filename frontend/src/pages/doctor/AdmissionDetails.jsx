@@ -22,9 +22,9 @@ const AdmissionDetails = () => {
     const [orders, setOrders] = useState([]);
     const [vitals, setVitals] = useState([]);
     const [curItem, setCurItem] = useState({
-        medicine_name: '', dosage: '', route: 'PO', frequency: 'q8h',
-        start_datetime: new Date().toISOString().slice(0, 16),
-        duration_days: 1
+        medicine_name: '', dosage: '', route: 'PO', 
+        morning: true, afternoon: false, evening: true,
+        duration_days: 1, instructions: ''
     });
 
     useEffect(() => {
@@ -57,13 +57,12 @@ const AdmissionDetails = () => {
 
     const addItem = () => {
         if (!curItem.medicine_name) return setToast({ message: "Medicine Name required", type: 'error' });
-        if (!curItem.start_datetime) return setToast({ message: "Start time required", type: 'error' });
 
         setOrderForm({ ...orderForm, medication_items: [...orderForm.medication_items, curItem] });
         setCurItem({
-            medicine_name: '', dosage: '', route: 'PO', frequency: 'q8h',
-            start_datetime: new Date().toISOString().slice(0, 16),
-            duration_days: 1
+            medicine_name: '', dosage: '', route: 'PO', 
+            morning: true, afternoon: false, evening: true,
+            duration_days: 1, instructions: ''
         });
     };
 
@@ -125,10 +124,28 @@ const AdmissionDetails = () => {
                                         <h4 className="mb-0_5">Order #{order.id} <span className={`badge badge-${order.priority === 'urgent' ? 'danger' : 'secondary'}`}>{order.priority}</span></h4>
                                         <span className="text-xs text-muted">{new Date(order.created_at).toLocaleDateString()}</span>
                                     </div>
-                                    <div className="text-sm">
-                                        {order.medication_items.map((item, idx) => (
-                                            <div key={idx}>• {item.medicine_name} {item.dosage} ({item.frequency})</div>
-                                        ))}
+                                    <div className="text-sm mt-0_5">
+                                        {order.medication_items.map((item, idx) => {
+                                            const start = new Date(order.created_at || Date.now());
+                                            const end = new Date(start);
+                                            end.setDate(end.getDate() + item.duration_days);
+
+                                            const scheduleStr = [
+                                                item.morning ? 'Morning' : null,
+                                                item.afternoon ? 'Afternoon' : null,
+                                                item.evening ? 'Evening' : null
+                                            ].filter(Boolean).join(', ') || 'PRN (As Needed)';
+
+                                            return (
+                                                <div key={idx} style={{ marginBottom: '0.6rem', padding: '0.4rem', background: '#f8fafc', borderRadius: '4px', border: '1px solid #e2e8f0' }}>
+                                                    <div>• {item.medicine_name} - <strong>{item.dosage}</strong> ({item.route}) <span className="text-primary font-medium" style={{ fontSize: '0.85rem' }}>[{scheduleStr}]</span></div>
+                                                    <div className="text-xs text-muted" style={{ paddingLeft: '0.8rem', marginTop: '0.2rem' }}>
+                                                        Duration: {item.duration_days} Days (Ends ~{end.toLocaleDateString()})
+                                                    </div>
+                                                    {item.instructions && <div className="text-xs text-muted" style={{ paddingLeft: '0.8rem', marginTop: '0.2rem', fontStyle: 'italic' }}>Note: {item.instructions}</div>}
+                                                </div>
+                                            );
+                                        })}
                                     </div>
                                     <div className="mt-0_5 text-xs text-muted">Status: {order.status}</div>
                                 </div>
@@ -163,19 +180,48 @@ const AdmissionDetails = () => {
                     </select>
                 </div>
 
-                <div className="bg-light p-1 rounded mb-1">
-                    <h4 className="flex-start gap-0_5"><Pill size={16} /> Add Medication</h4>
+                <div className="bg-light p-1 rounded mb-1" style={{ border: '1px solid #e2e8f0', background: '#ffffff', boxShadow: '0 2px 4px rgba(0,0,0,0.02)' }}>
+                    <h4 className="flex-start gap-0_5 text-primary text-sm uppercase m-0 mb-1" style={{ letterSpacing: '0.05em' }}><Pill size={16} /> Add Medication Items</h4>
                     <div className="grid-2 gap-0_5 mb-0_5">
-                        <input className="form-control" placeholder="Medication Name" value={curItem.medicine_name} onChange={e => setCurItem({ ...curItem, medicine_name: e.target.value })} />
-                        <input className="form-control" placeholder="Dosage (e.g. 500mg)" value={curItem.dosage} onChange={e => setCurItem({ ...curItem, dosage: e.target.value })} />
+                        <input className="form-control" placeholder="Medicine Name (e.g. Paracetamol)" value={curItem.medicine_name} onChange={e => setCurItem({ ...curItem, medicine_name: e.target.value })} style={{ padding: '0.75rem', borderRadius: 8, border: '1px solid #cbd5e1', transition: 'border-color 0.2s' }} />
+                        <input className="form-control" placeholder="Dosage (e.g. 500mg)" value={curItem.dosage} onChange={e => setCurItem({ ...curItem, dosage: e.target.value })} style={{ padding: '0.75rem', borderRadius: 8, border: '1px solid #cbd5e1', transition: 'border-color 0.2s' }} />
                     </div>
-                    <div className="grid-3 gap-0_5 mb-0_5">
-                        <select className="form-control" value={curItem.route} onChange={e => setCurItem({ ...curItem, route: e.target.value })}><option>PO</option><option>IV</option></select>
-                        <input className="form-control" placeholder="Freq (q8h)" value={curItem.frequency} onChange={e => setCurItem({ ...curItem, frequency: e.target.value })} />
-                        <input className="form-control" type="number" placeholder="Days" value={curItem.duration_days} onChange={e => setCurItem({ ...curItem, duration_days: parseInt(e.target.value) })} />
+                    <div className="grid-2 gap-0_5 mb-1">
+                        <div>
+                            <label className="text-xs text-muted block mb-0_25 font-bold uppercase" style={{ fontSize: '0.7rem' }}>Route</label>
+                            <select className="form-control" value={curItem.route} onChange={e => setCurItem({ ...curItem, route: e.target.value })} style={{ padding: '0.75rem', borderRadius: 8, border: '1px solid #cbd5e1', background: '#fff' }}>
+                                <option value="PO">Oral (PO)</option>
+                                <option value="IV">Intravenous (IV)</option>
+                                <option value="IM">Intramuscular (IM)</option>
+                                <option value="Topical">Topical</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label className="text-xs text-muted block mb-0_25 font-bold uppercase" style={{ fontSize: '0.7rem' }}>Period (Days) - Auto calculates end date</label>
+                            <input className="form-control" type="number" placeholder="Duration (Days)" min="1" value={curItem.duration_days} onChange={e => setCurItem({ ...curItem, duration_days: parseInt(e.target.value) || 1 })} style={{ padding: '0.75rem', borderRadius: 8, border: '1px solid #cbd5e1' }} />
+                        </div>
                     </div>
-                    <input className="form-control mb-0_5" type="datetime-local" value={curItem.start_datetime} onChange={e => setCurItem({ ...curItem, start_datetime: e.target.value })} />
-                    <button className="btn-secondary btn-sm full-width" onClick={addItem}>+ Add to Schedule</button>
+                    <label className="text-sm font-bold text-muted uppercase block mb-0_5" style={{ fontSize: '0.75rem', letterSpacing: '0.04em' }}>Schedule (Check all that apply)</label>
+                    <div className="flex-start gap-1 mb-1 bg-white p-0_5 rounded" style={{ border: '1px solid #cbd5e1', padding: '0.75rem', borderRadius: 8 }}>
+                         <label className="flex-center gap-0_5 cursor-pointer" style={{ cursor: 'pointer' }}>
+                             <input type="checkbox" checked={curItem.morning} onChange={(e) => setCurItem({...curItem, morning: e.target.checked})} style={{ width: '16px', height: '16px', cursor: 'pointer' }} /> 
+                             <span className="text-sm font-bold text-dark">Morning</span>
+                         </label>
+                         <label className="flex-center gap-0_5 cursor-pointer" style={{ cursor: 'pointer' }}>
+                             <input type="checkbox" checked={curItem.afternoon} onChange={(e) => setCurItem({...curItem, afternoon: e.target.checked})} style={{ width: '16px', height: '16px', cursor: 'pointer' }} /> 
+                             <span className="text-sm font-bold text-dark">Afternoon</span>
+                         </label>
+                         <label className="flex-center gap-0_5 cursor-pointer" style={{ cursor: 'pointer' }}>
+                             <input type="checkbox" checked={curItem.evening} onChange={(e) => setCurItem({...curItem, evening: e.target.checked})} style={{ width: '16px', height: '16px', cursor: 'pointer' }} /> 
+                             <span className="text-sm font-bold text-dark">Evening</span>
+                         </label>
+                    </div>
+                    
+                    <input className="form-control mb-1" placeholder="Instructions/Notes (Optional)" value={curItem.instructions} onChange={e => setCurItem({ ...curItem, instructions: e.target.value })} style={{ padding: '0.75rem', borderRadius: 8, border: '1px solid #cbd5e1', width: '100%', boxSizing: 'border-box' }} />
+
+                    <button className="btn-primary btn-sm full-width flex-center gap-0_5 font-bold" onClick={addItem} style={{ padding: '0.75rem', borderRadius: 8, transition: 'transform 0.1s' }} onMouseDown={e => e.currentTarget.style.transform = 'scale(0.98)'} onMouseUp={e => e.currentTarget.style.transform = 'scale(1)'} onMouseLeave={e => e.currentTarget.style.transform = 'scale(1)'}>
+                        <Plus size={16}/> Add to Order List
+                    </button>
                 </div>
 
                 {orderForm.medication_items.length > 0 && (
@@ -183,8 +229,11 @@ const AdmissionDetails = () => {
                         <h4>Items to Order ({orderForm.medication_items.length})</h4>
                         <ul className="list-group">
                             {orderForm.medication_items.map((item, i) => (
-                                <li key={i} className="list-item flex-between p-0_5 border-bottom">
-                                    <span>{item.medicine_name} {item.dosage}</span>
+                                <li key={i} className="list-item flex-between p-0_5 border-bottom" style={{ borderRadius: 6, marginBottom: '0.2rem', background: '#f8fafc' }}>
+                                    <div>
+                                        <strong>{item.medicine_name}</strong> {item.dosage} ({item.route})
+                                        {item.instructions && <div className="text-xs text-muted">Note: {item.instructions}</div>}
+                                    </div>
                                     <button className="text-danger btn-icon" onClick={() => setOrderForm({ ...orderForm, medication_items: orderForm.medication_items.filter((_, idx) => idx !== i) })}><Trash2 size={14} /></button>
                                 </li>
                             ))}
@@ -192,7 +241,10 @@ const AdmissionDetails = () => {
                     </div>
                 )}
 
-                <textarea className="form-control mb-1" placeholder="Clinical Notes..." value={orderForm.notes} onChange={e => setOrderForm({ ...orderForm, notes: e.target.value })} />
+                <div className="form-group mb-1">
+                    <label>Overall Clinical Notes</label>
+                    <textarea className="form-control" placeholder="Clinical Notes..." value={orderForm.notes} onChange={e => setOrderForm({ ...orderForm, notes: e.target.value })} style={{ padding: '0.75rem', borderRadius: 8, border: '1px solid #cbd5e1', minHeight: '80px', width: '100%', boxSizing: 'border-box' }} />
+                </div>
 
                 <div className="flex-end gap-1">
                     <button onClick={() => setShowOrderModal(false)} className="btn-secondary">Cancel</button>

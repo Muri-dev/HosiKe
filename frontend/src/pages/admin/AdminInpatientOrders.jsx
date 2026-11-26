@@ -9,11 +9,19 @@ const AdminInpatientOrders = () => {
     const [nurses, setNurses] = useState([]);
     const [selectedOrder, setSelectedOrder] = useState(null);
     const [selectedNurse, setSelectedNurse] = useState('');
+    const [loading, setLoading] = useState(true);
     const [toast, setToast] = useState(null);
 
     const fetchOrders = async () => {
-        const res = await api.get('/inpatient-orders/');
-        setOrders(res.data);
+        setLoading(true);
+        try {
+            const res = await api.get('/inpatient-orders/');
+            setOrders(res.data);
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setLoading(false);
+        }
     };
 
     useEffect(() => {
@@ -68,7 +76,7 @@ const AdminInpatientOrders = () => {
         <div className="fade-in">
             <h1>Inpatient Orders Review</h1>
             <div className="card">
-                <DataTable columns={columns} data={orders} />
+                <DataTable columns={columns} data={orders} isLoading={loading} />
             </div>
 
             <Modal isOpen={!!selectedOrder} onClose={() => setSelectedOrder(null)} title="Allocate Nurse">

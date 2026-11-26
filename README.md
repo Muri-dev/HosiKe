@@ -1,45 +1,66 @@
-# Hospital Management System
+# HosiKe - Hospital Management System
 
-A complete Hospital Management System with Django Backend and React Frontend.
+> A complete and modern Hospital Management System built to ensure cross-platform accessibility, scalability, security, and real-time AI clinical intelligence.
 
-## Quick Start
+### 💻 Technology Stack
+- **Frontend:** React + Vite + Lucide Icons
+- **Backend:** Python / Django REST Framework
+- **Database:** Supabase PostgreSQL (with SQLite fallback)
+- **AI Intelligence:** Google Gemini (`gemini-flash-lite-latest`) + Live-RAG (Role-scoped clinical context engine)
 
-### Backend
+---
+
+## 🚀 Quick Start
+
+### 1. Backend Setup
+The backend communicates with your Supabase PostgreSQL database (configured via `backend/.env`).
+
 ```bash
 cd backend
-# Create venv (optional but recommended)
-# python -m venv venv
-# .\venv\Scripts\activate
+
+# Create and activate virtual environment (recommended)
+python -m venv venv
+.\venv\Scripts\activate  # Windows
+# source venv/bin/activate  # Mac/Linux
 
 # Install dependencies
-pip install django djangorestframework djangorestframework-simplejwt django-cors-headers
+pip install -r requirements.txt
 
-# Initialize Database
+# Run migrations & populate database
 python manage.py migrate
-python manage.py seed_data
+python manage.py loaddata data_backup.json
 
-# Run Server
+# Start the Django server
 python manage.py runserver
 ```
-Backend runs on `http://127.0.0.1:8000`.
+The backend API is served at: `http://127.0.0.1:8000`.
 
-### Frontend
+### 2. Frontend Setup
 ```bash
 cd frontend
+
+# Install node modules
 npm install
+
+# Start the development server
 npm run dev
 ```
-Frontend runs on `http://localhost:5173`.
+The user interface is served at: `http://localhost:5173`.
 
-## Features
-- Role-based Dashboards (Admin, Doctor, Nurse, Patient)
-- Appointment Scheduling and Management
-- Vitals Recording
-- Consultation Notes
-- JWT Authentication
+---
 
-## Demo Accounts
-- **Admin**: admin1 / pass1234
-- **Doctor**: doctor1 / pass1234
-- **Nurse**: nurse1 / pass1234
-- **Patient**: patient1 / pass1234
+## ✨ Core Features
+- **HosiKe AI Assistant:** Live conversational assistant for Patients, Doctors, Nurses, and Admins. Computes remaining prescription doses, checks schedules, reviews vitals, and tracks hospital-wide rosters in real time with zero hallucinations.
+- **Role-based Dashboards:** Dedicated interfaces for Admins, Doctors, Nurses, and Patients.
+- **Clinical Workflows:** Seamless appointment scheduling, triage management, and automated nursing queues.
+- **Inpatient & Remote Monitoring:** Complete inpatient admission management and remote prescription tracking with daily medication timelines.
+- **Secure Architecture:** Robust JWT Authentication with role-based access control.
+
+---
+
+## 🔑 Demo Accounts
+Use these credentials to explore the different dashboards:
+- **Admin**: `admin1` / `pass1234`
+- **Doctor**: `doctor1` / `pass1234`
+- **Nurse**: `nurse1` / `pass1234`
+- **Patient**: `patient1` / `pass1234`

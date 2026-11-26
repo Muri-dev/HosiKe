@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../api/axios';
-import { Users, UserPlus, Calendar, Clock, Activity, TrendingUp, Pill } from 'lucide-react';
+import { Users, UserPlus, Calendar, Clock, Activity, TrendingUp, Pill, Wifi, Bed, MonitorPlay } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 
 const AdminDashboard = () => {
@@ -59,21 +59,51 @@ const AdminDashboard = () => {
                 </div>
                 <div className="card">
                     <div className="flex-between" style={{ marginBottom: '0.5rem' }}>
+                        <h3>Admitted</h3>
+                        <Bed size={20} className="text-muted" />
+                    </div>
+                    <div className="value">{stats.kpis.admitted_count ?? '—'}</div>
+                    <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Inpatients</p>
+                </div>
+                <div className="card">
+                    <div className="flex-between" style={{ marginBottom: '0.5rem' }}>
                         <h3>Pending</h3>
                         <Clock size={20} className="text-red" />
                     </div>
                     <div className="value" style={{ color: '#c2410c' }}>{stats.kpis.pending_appointments}</div>
                     <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>{stats.kpis.unassigned_appointments} Unassigned Today</p>
                 </div>
+                <div className="card">
+                    <div className="flex-between" style={{ marginBottom: '0.5rem' }}>
+                        <h3>Monitored</h3>
+                        <Activity size={20} className="text-primary" />
+                    </div>
+                    <div className="value" style={{ color: '#0ea5e9' }}>{stats.kpis.remote_monitoring_count ?? '—'}</div>
+                    <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Remote Patients</p>
+                </div>
             </div>
 
             {/* Quick Actions */}
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', marginBottom: '2rem' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(200px,1fr))', gap: '1.5rem', marginBottom: '2rem' }}>
                 <div className="card hover-scale" onClick={() => navigate('/admin/remote-referrals')} style={{ cursor: 'pointer', borderLeft: '4px solid #f59e0b', display: 'flex', alignItems: 'center', gap: '1rem' }}>
                     <div style={{ padding: '0.5rem', borderRadius: '50%', background: '#fef3c7', color: '#d97706' }}><Activity size={24} /></div>
                     <div>
                         <h3 style={{ margin: 0 }}>Remote Referrals</h3>
                         <p className="text-muted text-sm" style={{ margin: 0 }}>Assign patient vitals</p>
+                    </div>
+                </div>
+                <div className="card hover-scale" onClick={() => navigate('/admin/remote-patients')} style={{ cursor: 'pointer', borderLeft: '4px solid #6366f1', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                    <div style={{ padding: '0.5rem', borderRadius: '50%', background: '#ede9fe', color: '#7c3aed' }}><Wifi size={24} /></div>
+                    <div>
+                        <h3 style={{ margin: 0 }}>Remote Patients</h3>
+                        <p className="text-muted text-sm" style={{ margin: 0 }}>Active prescriptions, outpatient</p>
+                    </div>
+                </div>
+                <div className="card hover-scale" onClick={() => navigate('/admin/admissions')} style={{ cursor: 'pointer', borderLeft: '4px solid #3b82f6', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                    <div style={{ padding: '0.5rem', borderRadius: '50%', background: '#dbeafe', color: '#1d4ed8' }}><Bed size={24} /></div>
+                    <div>
+                        <h3 style={{ margin: 0 }}>Admissions</h3>
+                        <p className="text-muted text-sm" style={{ margin: 0 }}>Manage inpatients</p>
                     </div>
                 </div>
                 <div className="card hover-scale" onClick={() => navigate('/admin/inpatient-orders')} style={{ cursor: 'pointer', borderLeft: '4px solid #10b981', display: 'flex', alignItems: 'center', gap: '1rem' }}>

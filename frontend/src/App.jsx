@@ -34,6 +34,7 @@ import AdminInpatientOrders from './pages/admin/AdminInpatientOrders';
 import AdminRemoteReferrals from './pages/admin/AdminRemoteReferrals';
 import AdminAdmissions from './pages/admin/AdminAdmissions';
 import AuditLogPage from './pages/admin/AuditLog';
+import AdminRemotePatients from './pages/admin/AdminRemotePatients';
 import NurseMedications from './pages/nurse/NurseMedications';
 import PatientSearch from './pages/shared/PatientSearch';
 import MyProfile from './pages/shared/MyProfile';
@@ -62,6 +63,7 @@ function App() {
               <Route path="/admin/reports" element={<ReportsPage />} />
               <Route path="/admin/inpatient-orders" element={<AdminInpatientOrders />} />
               <Route path="/admin/remote-referrals" element={<AdminRemoteReferrals />} />
+              <Route path="/admin/remote-patients" element={<AdminRemotePatients />} />
               <Route path="/admin/patients" element={<PatientSearch />} />
               <Route path="/admin/audit-log" element={<AuditLogPage />} />
               <Route path="/admin" element={<Navigate to="/admin/overview" replace />} />

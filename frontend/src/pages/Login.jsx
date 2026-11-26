@@ -6,12 +6,14 @@ const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const [loading, setLoading] = useState(false);
     const { login } = useAuth();
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
+        setLoading(true);
         try {
             const user = await login(username, password);
             // Navigate based on role
@@ -24,6 +26,7 @@ const Login = () => {
             }
         } catch (err) {
             setError('Invalid username or password');
+            setLoading(false);
         }
     };
 
@@ -52,7 +55,9 @@ const Login = () => {
                             required
                         />
                     </div>
-                    <button type="submit" className="btn-primary">Login</button>
+                    <button type="submit" className="btn-primary" disabled={loading}>
+                        {loading ? 'Logging in...' : 'Login'}
+                    </button>
                 </form>
 
             </div>

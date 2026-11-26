@@ -1,10 +1,13 @@
 import React, { useState, useCallback } from 'react';
 import api from '../../api/axios';
+import { useAuth } from '../../context/AuthContext';
 import {
     Search, User, Calendar, Activity, Bed,
     ChevronRight, X, ArrowLeft, ClipboardList,
-    Phone, Mail, MapPin, Droplet, Heart, Thermometer, Weight
+    Phone, Mail, MapPin, Droplet, Heart, Thermometer, Weight, UserPlus
 } from 'lucide-react';
+import Toast from '../../components/common/Toast';
+import Modal from '../../components/common/Modal';
 
 // ─── Helper badge ───────────────────────────────────────────────────────────
 const StatusBadge = ({ status }) => (
@@ -205,12 +208,18 @@ const PatientRecord = ({ patient, record, onBack }) => {
 
 // ─── Main Page ───────────────────────────────────────────────────────────────
 export default function PatientSearch() {
+    const { user } = useAuth();
     const [query, setQuery] = useState('');
     const [results, setResults] = useState([]);
     const [searching, setSearching] = useState(false);
     const [selectedRecord, setSelectedRecord] = useState(null);
     const [loadingRecord, setLoadingRecord] = useState(false);
     const [error, setError] = useState('');
+
+    const [showNewPatient, setShowNewPatient] = useState(false);
+    const [newPatient, setNewPatient] = useState({ username:'', email:'', first_name:'', last_name:'', password:'', phone:'', address:'' });
+    const [creating, setCreating] = useState(false);
+    const [toast, setToast] = useState(null);
 
     const search = useCallback(async (q) => {
         if (!q.trim()) { setResults([]); return; }
@@ -245,6 +254,23 @@ export default function PatientSearch() {
         }
     };
 
+    const handleCreatePatient = async (e) => {
+        e.preventDefault();
+        setCreating(true);
+        try {
+            await api.post('/admin/users/', { ...newPatient, role: 'patient' });
+            setToast({ message: 'Patient created successfully', type: 'success' });
+            setShowNewPatient(false);
+            const searchVal = newPatient.first_name || newPatient.username;
+            setNewPatient({ username:'', email:'', first_name:'', last_name:'', password:'', phone:'', address:'' });
+            setQuery(searchVal);
+            search(searchVal);
+        } catch (err) {
+            setToast({ message: err.response?.data?.detail || 'Failed to create patient', type: 'error' });
+        }
+        setCreating(false);
+    };
+
     const clearSearch = () => {
         setQuery('');
         setResults([]);
@@ -273,11 +299,16 @@ export default function PatientSearch() {
     return (
         <div style={styles.page}>
             {/* Page header */}
-            <div className="flex-between">
+            <div className="flex-between" style={{ marginBottom: '1.5rem', alignItems: 'center' }}>
                 <div>
                     <h1 style={styles.pageTitle}>Patient Records</h1>
                     <p style={styles.pageSubtitle}>Search and view comprehensive patient medical history</p>
                 </div>
+                {user?.role === 'admin' && (
+                    <button onClick={() => setShowNewPatient(true)} className="btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', padding: '0.55rem 1rem' }}>
+                        <UserPlus size={16} /> New Patient
+                    </button>
+                )}
             </div>
 
             {/* Search bar */}
@@ -348,6 +379,49 @@ export default function PatientSearch() {
                     ))}
                 </div>
             )}
+
+            {/* New Patient Modal */}
+            <Modal isOpen={showNewPatient} onClose={() => setShowNewPatient(false)} title="Register New Patient">
+                <form onSubmit={handleCreatePatient}>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                        <div className="form-group">
+                            <label>First Name</label>
+                            <input className="form-control" required value={newPatient.first_name} onChange={e => setNewPatient({...newPatient, first_name: e.target.value})} />
+                        </div>
+                        <div className="form-group">
+                            <label>Last Name</label>
+                            <input className="form-control" required value={newPatient.last_name} onChange={e => setNewPatient({...newPatient, last_name: e.target.value})} />
+                        </div>
+                    </div>
+                    <div className="form-group">
+                        <label>Username *</label>
+                        <input className="form-control" required value={newPatient.username} onChange={e => setNewPatient({...newPatient, username: e.target.value})} />
+                    </div>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                        <div className="form-group">
+                            <label>Email</label>
+                            <input type="email" className="form-control" value={newPatient.email} onChange={e => setNewPatient({...newPatient, email: e.target.value})} />
+                        </div>
+                        <div className="form-group">
+                            <label>Phone</label>
+                            <input className="form-control" value={newPatient.phone} onChange={e => setNewPatient({...newPatient, phone: e.target.value})} />
+                        </div>
+                    </div>
+                    <div className="form-group">
+                        <label>Address / Location</label>
+                        <input className="form-control" value={newPatient.address} onChange={e => setNewPatient({...newPatient, address: e.target.value})} />
+                    </div>
+                    <div className="form-group">
+                        <label>Password *</label>
+                        <input type="password" required className="form-control" value={newPatient.password} onChange={e => setNewPatient({...newPatient, password: e.target.value})} />
+                    </div>
+                    <button type="submit" className="btn-primary full-width" disabled={creating}>
+                        {creating ? 'Registering...' : 'Register Patient'}
+                    </button>
+                </form>
+            </Modal>
+
+            {toast && <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />}
         </div>
     );
 }

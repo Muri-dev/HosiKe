@@ -1,25 +1,52 @@
 import React, { useEffect, useState } from 'react';
 import api from '../../api/axios';
-import { Activity, User, Clock, AlertCircle } from 'lucide-react';
+import { Activity, User, Clock, AlertCircle, Pill, Power, Wifi } from 'lucide-react';
 import Modal from '../../components/common/Modal';
 import DataTable from '../../components/common/DataTable';
 import PrescriptionsPanel from './PrescriptionsPanel';
+import NurseMedications from './NurseMedications';
 import Toast from '../../components/common/Toast';
 
 const NurseDashboard = () => {
-    const [activeTab, setActiveTab] = useState('queue'); // queue, prescriptions
+    const [activeTab, setActiveTab] = useState('queue'); // queue | medications | prescriptions
     const [queue, setQueue] = useState([]);
+    const [loadingQueue, setLoadingQueue] = useState(true);
     const [selectedAppt, setSelectedAppt] = useState(null);
     const [vitals, setVitals] = useState({ temperature: '', blood_pressure: '', heart_rate: '', weight: '', symptoms: '' });
     const [showModal, setShowModal] = useState(false);
     const [toast, setToast] = useState(null);
+    const [onDuty, setOnDuty] = useState(null);  // null = loading
+    const [dutyToggling, setDutyToggling] = useState(false);
+
+    // Fetch if nurse is currently on duty
+    useEffect(() => {
+        api.get('/me/').then(r => {
+            setOnDuty(r.data.is_on_duty ?? false);
+        }).catch(() => setOnDuty(false));
+    }, []);
+
+    const toggleDuty = async () => {
+        setDutyToggling(true);
+        try {
+            const res = await api.patch('/me/availability/');
+            setOnDuty(res.data.is_on_duty);
+            setToast({ message: res.data.detail, type: res.data.is_on_duty ? 'success' : 'info' });
+        } catch {
+            setToast({ message: 'Failed to update shift status', type: 'error' });
+        }
+        setDutyToggling(false);
+    };
+
 
     const fetchQueue = async () => {
+        setLoadingQueue(true);
         try {
             const response = await api.get('/nurse/queue/');
             setQueue(response.data);
         } catch (error) {
             console.error("Failed to fetch queue", error);
+        } finally {
+            setLoadingQueue(false);
         }
     };
 
@@ -97,12 +124,32 @@ const NurseDashboard = () => {
 
     return (
         <div>
-            <div className="flex-between">
+            {/* ── Header ── */}
+            <div className="flex-between" style={{ marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
                 <div>
-                    <h1>Nurse Dashboard</h1>
-                    <p className="text-muted">Manage patient queue and prescriptions</p>
+                    <h1 style={{ margin: 0 }}>Nurse Dashboard</h1>
+                    <p className="text-muted" style={{ margin: '0.25rem 0 0' }}>Manage patient queue and prescriptions</p>
                 </div>
-                <div className="tabs" style={{ display: 'flex', gap: '1rem' }}>
+
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                    {/* Shift status toggle */}
+                    <button
+                        onClick={toggleDuty}
+                        disabled={dutyToggling || onDuty === null}
+                        style={{
+                            display: 'flex', alignItems: 'center', gap: '0.6rem',
+                            padding: '0.55rem 1.1rem', borderRadius: 999, border: 'none', cursor: 'pointer',
+                            fontWeight: 700, fontSize: '0.9rem', transition: 'all 0.2s',
+                            background: onDuty ? '#22c55e' : '#94a3b8',
+                            color: '#fff',
+                            boxShadow: onDuty ? '0 0 0 4px rgba(34,197,94,0.2)' : 'none',
+                        }}
+                    >
+                        <Power size={16} />
+                        {dutyToggling ? 'Updating…' : onDuty ? '🟢 On Duty' : '🔴 Off Duty'}
+                    </button>
+
+                    <div className="tabs" style={{ display: 'flex', gap: '0.75rem' }}>
                     <button
                         className={`btn-primary ${activeTab !== 'queue' ? 'btn-outline' : ''}`}
                         onClick={() => setActiveTab('queue')}
@@ -111,21 +158,34 @@ const NurseDashboard = () => {
                         Patient Queue
                     </button>
                     <button
+                        className={`btn-primary ${activeTab !== 'medications' ? 'btn-outline' : ''}`}
+                        onClick={() => setActiveTab('medications')}
+                        style={{ background: activeTab !== 'medications' ? 'transparent' : '', color: activeTab !== 'medications' ? 'var(--primary-color)' : '', border: '1px solid var(--primary-color)', display: 'flex', alignItems: 'center', gap: '0.4rem' }}
+                    >
+                        <Pill size={15} /> Medications
+                    </button>
+                    <button
                         className={`btn-primary ${activeTab !== 'prescriptions' ? 'btn-outline' : ''}`}
                         onClick={() => setActiveTab('prescriptions')}
                         style={{ background: activeTab !== 'prescriptions' ? 'transparent' : '', color: activeTab !== 'prescriptions' ? 'var(--primary-color)' : '', border: '1px solid var(--primary-color)' }}
                     >
                         Prescriptions
                     </button>
-                </div>
-            </div>
+                    </div>  {/* tabs */}
+                </div>  {/* right side flex */}
+            </div>  {/* flex-between header */}
 
             {activeTab === 'queue' ? (
                 <div className="card">
                     <DataTable
                         columns={queueColumns}
                         data={queue}
+                        isLoading={loadingQueue}
                     />
+                </div>
+            ) : activeTab === 'medications' ? (
+                <div className="card" style={{ padding: '1.5rem' }}>
+                    <NurseMedications />
                 </div>
             ) : (
                 <div className="card">

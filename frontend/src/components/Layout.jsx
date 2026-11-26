@@ -17,8 +17,11 @@ import {
     CheckSquare,
     MessageSquare,
     Search,
-    ShieldCheck
+    ShieldCheck,
+    Wifi,
+    Sparkles
 } from 'lucide-react';
+import AIAssistant from './AIAssistant';
 
 const Sidebar = ({ user, isOpen, toggleSidebar }) => {
     const location = useLocation();
@@ -68,6 +71,7 @@ const Sidebar = ({ user, isOpen, toggleSidebar }) => {
             { path: '/admin/overview', label: 'Overview', icon: LayoutDashboard },
             { path: '/admin/users', label: 'Users', icon: Users },
             { path: '/admin/patients', label: 'Patient Records', icon: Search },
+            { path: '/admin/remote-patients', label: 'Remote Patients', icon: Wifi },
             { path: '/admin/admissions', label: 'Admissions', icon: Bed },
             { path: '/admin/appointments', label: 'Appointments', icon: Calendar },
             { path: '/admin/inpatient-orders', label: 'Inpatient Orders', icon: Clipboard },
@@ -180,11 +184,29 @@ const Sidebar = ({ user, isOpen, toggleSidebar }) => {
     );
 };
 
-const Topbar = ({ user, toggleSidebar }) => {
+const Topbar = ({ user, toggleSidebar, onToggleAI }) => {
     return (
         <header className="topbar">
             <button className="menu-btn mobile-only" onClick={toggleSidebar}><Menu size={24} /></button>
             <div className="user-info" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                <button
+                    onClick={onToggleAI}
+                    style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.4rem',
+                        background: '#f0fdfa',
+                        color: '#0f766e',
+                        border: '1px solid #99f6e4',
+                        padding: '0.4rem 0.75rem',
+                        borderRadius: '9999px',
+                        fontSize: '0.8rem',
+                        fontWeight: 600,
+                    }}
+                >
+                    <Sparkles size={15} />
+                    <span>HosiKe AI</span>
+                </button>
                 <div style={{ textAlign: 'right' }}>
                     <div className="user-name" style={{ fontWeight: 600 }}>
                         {user?.first_name ? `${user.first_name} ${user.last_name}` : user?.username}
@@ -210,16 +232,18 @@ const Topbar = ({ user, toggleSidebar }) => {
 const Layout = () => {
     const { user } = useAuth();
     const [sidebarOpen, setSidebarOpen] = useState(false);
+    const [aiOpen, setAiOpen] = useState(false);
 
     return (
         <div className="app-layout">
             <Sidebar user={user} isOpen={sidebarOpen} toggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
             <div className="main-content">
-                <Topbar user={user} toggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
+                <Topbar user={user} toggleSidebar={() => setSidebarOpen(!sidebarOpen)} onToggleAI={() => setAiOpen((prev) => !prev)} />
                 <main className="page-content">
                     <Outlet />
                 </main>
             </div>
+            <AIAssistant user={user} isOpen={aiOpen} setIsOpen={setAiOpen} />
         </div>
     );
 };

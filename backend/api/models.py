@@ -31,7 +31,11 @@ class PatientProfile(models.Model):
     blood_group = models.CharField(max_length=5, choices=BLOOD_GROUP_CHOICES, blank=True, null=True)
     contact_number = models.CharField(max_length=20, blank=True, null=True)
     address = models.TextField(blank=True)
-    
+    # Next of kin
+    next_of_kin_name = models.CharField(max_length=150, blank=True, null=True)
+    next_of_kin_relationship = models.CharField(max_length=80, blank=True, null=True)
+    next_of_kin_phone = models.CharField(max_length=20, blank=True, null=True)
+
     def __str__(self): return f"Profile of {self.user.username}"
 
 class DoctorProfile(models.Model):
@@ -41,6 +45,7 @@ class DoctorProfile(models.Model):
     license_number = models.CharField(max_length=100, blank=True, null=True)
     phone = models.CharField(max_length=20, blank=True, null=True)
     bio = models.TextField(blank=True, null=True)
+    is_on_duty = models.BooleanField(default=False)
 
     def __str__(self): return f"Dr. {self.user.username} - {self.specialization}"
 
@@ -48,7 +53,8 @@ class NurseProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='nurse_profile')
     department = models.CharField(max_length=100, blank=True)
     phone = models.CharField(max_length=20, blank=True, null=True)
-    
+    is_on_duty = models.BooleanField(default=False)
+
     def __str__(self): return f"Nurse {self.user.username}"
 
 class Appointment(models.Model):
@@ -61,7 +67,15 @@ class Appointment(models.Model):
         ('completed', 'Completed'),
         ('cancelled', 'Cancelled'),
     )
-    
+
+    URGENCY_CHOICES = (
+        ('normal', 'Normal'),
+        ('urgent', 'Urgent'),
+        ('emergency', 'Emergency'),
+    )
+
+    URGENCY_ORDER = {'emergency': 0, 'urgent': 1, 'normal': 2}
+
     patient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='appointments_as_patient')
     assigned_doctor = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='appointments_as_doctor')
     assigned_nurse = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='appointments_as_nurse')
@@ -69,6 +83,7 @@ class Appointment(models.Model):
     reason = models.TextField()
     notes = models.TextField(blank=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    urgency = models.CharField(max_length=15, choices=URGENCY_CHOICES, default='normal')
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -117,8 +132,10 @@ class PrescriptionItem(models.Model):
     prescription = models.ForeignKey(Prescription, on_delete=models.CASCADE, related_name='items')
     medicine_name = models.CharField(max_length=255)
     dosage = models.CharField(max_length=255)
-    frequency = models.CharField(max_length=255) # e.g. "BID", "Once a day"
-    duration = models.CharField(max_length=255) # e.g. "5 days"
+    duration = models.IntegerField(default=1) # duration in days
+    morning = models.BooleanField(default=False)
+    afternoon = models.BooleanField(default=False)
+    evening = models.BooleanField(default=False)
     route = models.CharField(max_length=100, blank=True, null=True) # e.g. Oral, IV
     instructions = models.TextField(blank=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='active')
@@ -128,6 +145,14 @@ class PrescriptionItem(models.Model):
     administered = models.BooleanField(default=False)
     administered_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='administered_items')
     administered_at = models.DateTimeField(null=True, blank=True)
+
+    @property
+    def frequency(self):
+        parts = []
+        if self.morning: parts.append("Morning")
+        if self.afternoon: parts.append("Afternoon")
+        if self.evening: parts.append("Evening")
+        return ", ".join(parts) if parts else "As directed"
 
     def __str__(self):
         return f"{self.medicine_name} - {self.dosage}"
@@ -188,6 +213,7 @@ class Admission(models.Model):
     
     patient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='admissions')
     admitting_doctor = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='admitted_patients')
+    assigned_nurse = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='nursing_admissions')
     ward = models.CharField(max_length=100)
     bed_number = models.CharField(max_length=20, blank=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='admitted')
@@ -196,7 +222,26 @@ class Admission(models.Model):
     notes = models.TextField(blank=True)
 
     def __str__(self):
-        return f"{self.patient.username} - {self.ward}"
+        return f"{self.patient.username} in {self.ward} ({self.status})"
+
+
+class RemoteMonitoring(models.Model):
+    """Tracks patients enrolled in hospital-managed remote monitoring."""
+    patient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='remote_monitorings')
+    assigned_doctor = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='monitored_patients')
+    enrolled_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, related_name='enrolled_remote')
+    enrolled_at = models.DateTimeField(auto_now_add=True)
+    notes = models.TextField(blank=True)
+    active = models.BooleanField(default=True)
+
+    class Meta:
+        # unique_together removed for MongoDB/Djongo compatibility;
+        # uniqueness is enforced at the view level instead.
+        pass
+
+    def __str__(self):
+        return f"{self.patient.username} - {'Active' if self.active else 'Inactive'} monitoring"
+
 
 class NurseShift(models.Model):
     nurse = models.ForeignKey(User, on_delete=models.CASCADE, related_name='shifts')
@@ -231,10 +276,11 @@ class MedicationItem(models.Model):
     medicine_name = models.CharField(max_length=255)
     dosage = models.CharField(max_length=100)
     route = models.CharField(max_length=50) # PO, IV, etc
-    frequency = models.CharField(max_length=100) # q8h, bid, etc
+    morning = models.BooleanField(default=False)
+    afternoon = models.BooleanField(default=False)
+    evening = models.BooleanField(default=False)
     duration_days = models.IntegerField(default=1)
     instructions = models.TextField(blank=True)
-    start_datetime = models.DateTimeField()
     status = models.CharField(max_length=20, default='active') # active, stopped
 
 class MedicationSchedule(models.Model):

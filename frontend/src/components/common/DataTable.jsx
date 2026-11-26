@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Search, ChevronLeft, ChevronRight } from 'lucide-react';
 
-const DataTable = ({ columns, data, actions, onRowClick }) => {
+const DataTable = ({ columns, data, actions, onRowClick, isLoading = false }) => {
     const [searchTerm, setSearchTerm] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10;
@@ -57,7 +57,13 @@ const DataTable = ({ columns, data, actions, onRowClick }) => {
                                 )}
                             </tr>
                         ))}
-                        {currentData.length === 0 && (
+                        {isLoading ? (
+                            <tr>
+                                <td colSpan={columns.length + (actions ? 1 : 0)} style={{ textAlign: 'center', padding: '2rem', color: '#888' }}>
+                                    Loading...
+                                </td>
+                            </tr>
+                        ) : currentData.length === 0 && (
                             <tr>
                                 <td colSpan={columns.length + (actions ? 1 : 0)} style={{ textAlign: 'center', padding: '2rem', color: '#888' }}>
                                     No data found
