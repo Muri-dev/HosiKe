@@ -90,6 +90,7 @@ const AIAssistant = ({ user, isOpen, setIsOpen }) => {
     const [sending, setSending] = useState(false);
     const [input, setInput] = useState('');
     const [modeLabel, setModeLabel] = useState('Live DB');
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
     const [messages, setMessages] = useState([
         {
             role: 'assistant',
@@ -97,6 +98,13 @@ const AIAssistant = ({ user, isOpen, setIsOpen }) => {
         },
     ]);
     const listEndRef = useRef(null);
+
+    // Track viewport for mobile-responsive AI panel
+    useEffect(() => {
+        const onResize = () => setIsMobile(window.innerWidth <= 768);
+        window.addEventListener('resize', onResize);
+        return () => window.removeEventListener('resize', onResize);
+    }, []);
 
     const refreshContext = useCallback(async () => {
         setSyncing(true);
@@ -205,21 +213,22 @@ const AIAssistant = ({ user, isOpen, setIsOpen }) => {
                 <button
                     onClick={() => setIsOpen(true)}
                     title="Open HosiKe AI Assistant"
+                    className="desktop-only"
                     style={{
                         position: 'fixed',
                         right: '1.5rem',
                         bottom: '1.5rem',
                         zIndex: 90,
-                        display: 'flex',
                         alignItems: 'center',
                         gap: '0.55rem',
                         background: 'linear-gradient(135deg, #0d9488, #0f766e)',
                         color: '#ffffff',
-                        padding: '0.8rem 1.15rem',
+                        padding: '0.8rem 1.25rem',
                         borderRadius: '9999px',
                         boxShadow: '0 10px 25px rgba(13, 148, 136, 0.35)',
-                        fontWeight: 600,
+                        fontWeight: 700,
                         fontSize: '0.9rem',
+                        transition: 'transform 0.2s, box-shadow 0.2s',
                     }}
                 >
                     <Sparkles size={18} />
@@ -231,18 +240,20 @@ const AIAssistant = ({ user, isOpen, setIsOpen }) => {
                 <div
                     style={{
                         position: 'fixed',
-                        right: '1.25rem',
-                        bottom: '1.25rem',
-                        width: 'min(430px, calc(100vw - 2rem))',
-                        height: 'min(640px, calc(100vh - 5rem))',
+                        top: isMobile ? 0 : 'auto',
+                        left: isMobile ? 0 : 'auto',
+                        right: isMobile ? 0 : '1.5rem',
+                        bottom: isMobile ? 0 : '1.5rem',
+                        width: isMobile ? '100vw' : '430px',
+                        height: isMobile ? '100dvh' : 'min(640px, calc(100vh - 5rem))',
                         backgroundColor: 'var(--card-bg)',
-                        border: '1px solid var(--border-color)',
-                        borderRadius: '0.85rem',
-                        boxShadow: '0 20px 50px rgba(15, 31, 46, 0.22)',
+                        border: isMobile ? 'none' : '1px solid var(--border-color)',
+                        borderRadius: isMobile ? 0 : '1rem',
+                        boxShadow: '0 25px 60px rgba(15, 23, 42, 0.25)',
                         display: 'flex',
                         flexDirection: 'column',
                         overflow: 'hidden',
-                        zIndex: 100,
+                        zIndex: 1000,
                     }}
                 >
                     {/* Header */}
