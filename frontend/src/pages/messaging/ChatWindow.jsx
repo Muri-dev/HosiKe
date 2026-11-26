@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Send } from 'lucide-react';
+import { Send, ArrowLeft } from 'lucide-react';
 
-const ChatWindow = ({ conversation, messages, onSendMessage, loading }) => {
+const ChatWindow = ({ conversation, messages, onSendMessage, loading, onBack }) => {
     const [newMessage, setNewMessage] = useState('');
     const endRef = useRef(null);
 
@@ -22,7 +22,17 @@ const ChatWindow = ({ conversation, messages, onSendMessage, loading }) => {
 
     return (
         <div style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-            <div style={{ padding: '1rem', borderBottom: '1px solid #e2e8f0', background: '#f8fafc' }}>
+            <div style={{ padding: '0.85rem 1rem', borderBottom: '1px solid #e2e8f0', background: '#f8fafc', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                {onBack && (
+                    <button
+                        type="button"
+                        onClick={onBack}
+                        style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', display: 'flex', padding: '0.2rem' }}
+                        aria-label="Back to conversations"
+                    >
+                        <ArrowLeft size={20} />
+                    </button>
+                )}
                 <strong>{conversation.display_name}</strong>
             </div>
 

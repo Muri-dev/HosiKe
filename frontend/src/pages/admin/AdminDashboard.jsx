@@ -29,8 +29,13 @@ const AdminDashboard = () => {
     const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884d8'];
 
     return (
-        <div>
-            <h1 className="flex-between">Hospital Overview</h1>
+        <div className="fade-in">
+            <div className="flex-between" style={{ marginBottom: '1.25rem' }}>
+                <div>
+                    <h1 style={{ margin: 0 }}>Hospital Administration</h1>
+                    <p className="text-muted" style={{ margin: '0.25rem 0 0' }}>Real-time hospital operations, admissions, and telemetry overview</p>
+                </div>
+            </div>
 
             {/* KPI Cards */}
             <div className="kpi-grid">

@@ -123,57 +123,53 @@ const NurseDashboard = () => {
     ];
 
     return (
-        <div>
+        <div className="fade-in">
             {/* ── Header ── */}
-            <div className="flex-between" style={{ marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
+            <div className="flex-between" style={{ marginBottom: '1.25rem' }}>
                 <div>
-                    <h1 style={{ margin: 0 }}>Nurse Dashboard</h1>
-                    <p className="text-muted" style={{ margin: '0.25rem 0 0' }}>Manage patient queue and prescriptions</p>
+                    <h1 style={{ margin: 0 }}>Nurse Station</h1>
+                    <p className="text-muted" style={{ margin: '0.25rem 0 0' }}>Manage patient triage queue and active medications</p>
                 </div>
 
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                    {/* Shift status toggle */}
-                    <button
-                        onClick={toggleDuty}
-                        disabled={dutyToggling || onDuty === null}
-                        style={{
-                            display: 'flex', alignItems: 'center', gap: '0.6rem',
-                            padding: '0.55rem 1.1rem', borderRadius: 999, border: 'none', cursor: 'pointer',
-                            fontWeight: 700, fontSize: '0.9rem', transition: 'all 0.2s',
-                            background: onDuty ? '#22c55e' : '#94a3b8',
-                            color: '#fff',
-                            boxShadow: onDuty ? '0 0 0 4px rgba(34,197,94,0.2)' : 'none',
-                        }}
-                    >
-                        <Power size={16} />
-                        {dutyToggling ? 'Updating…' : onDuty ? '🟢 On Duty' : '🔴 Off Duty'}
-                    </button>
+                {/* Shift status toggle */}
+                <button
+                    onClick={toggleDuty}
+                    disabled={dutyToggling || onDuty === null}
+                    style={{
+                        display: 'inline-flex', alignItems: 'center', gap: '0.5rem',
+                        padding: '0.5rem 1.1rem', borderRadius: 9999, border: 'none', cursor: 'pointer',
+                        fontWeight: 700, fontSize: '0.85rem', transition: 'all 0.2s',
+                        background: onDuty ? 'linear-gradient(135deg, #10b981 0%, #059669 100%)' : '#94a3b8',
+                        color: '#fff',
+                        boxShadow: onDuty ? '0 0 0 4px rgba(16, 185, 129, 0.2)' : 'none',
+                    }}
+                >
+                    <Power size={15} />
+                    <span>{dutyToggling ? 'Updating…' : onDuty ? '🟢 On Duty' : '🔴 Off Duty'}</span>
+                </button>
+            </div>
 
-                    <div className="tabs" style={{ display: 'flex', gap: '0.75rem' }}>
-                    <button
-                        className={`btn-primary ${activeTab !== 'queue' ? 'btn-outline' : ''}`}
-                        onClick={() => setActiveTab('queue')}
-                        style={{ background: activeTab !== 'queue' ? 'transparent' : '', color: activeTab !== 'queue' ? 'var(--primary-color)' : '', border: '1px solid var(--primary-color)' }}
-                    >
-                        Patient Queue
-                    </button>
-                    <button
-                        className={`btn-primary ${activeTab !== 'medications' ? 'btn-outline' : ''}`}
-                        onClick={() => setActiveTab('medications')}
-                        style={{ background: activeTab !== 'medications' ? 'transparent' : '', color: activeTab !== 'medications' ? 'var(--primary-color)' : '', border: '1px solid var(--primary-color)', display: 'flex', alignItems: 'center', gap: '0.4rem' }}
-                    >
-                        <Pill size={15} /> Medications
-                    </button>
-                    <button
-                        className={`btn-primary ${activeTab !== 'prescriptions' ? 'btn-outline' : ''}`}
-                        onClick={() => setActiveTab('prescriptions')}
-                        style={{ background: activeTab !== 'prescriptions' ? 'transparent' : '', color: activeTab !== 'prescriptions' ? 'var(--primary-color)' : '', border: '1px solid var(--primary-color)' }}
-                    >
-                        Prescriptions
-                    </button>
-                    </div>  {/* tabs */}
-                </div>  {/* right side flex */}
-            </div>  {/* flex-between header */}
+            {/* ── Navigation Tabs ── */}
+            <div className="tabs" style={{ marginBottom: '1.5rem' }}>
+                <button
+                    className={`tab ${activeTab === 'queue' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('queue')}
+                >
+                    <Activity size={16} /> <span>Patient Queue ({queue.length})</span>
+                </button>
+                <button
+                    className={`tab ${activeTab === 'medications' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('medications')}
+                >
+                    <Pill size={16} /> <span>Medication Roster</span>
+                </button>
+                <button
+                    className={`tab ${activeTab === 'prescriptions' ? 'active' : ''}`}
+                    onClick={() => setActiveTab('prescriptions')}
+                >
+                    <User size={16} /> <span>Prescriptions & Orders</span>
+                </button>
+            </div>
 
             {activeTab === 'queue' ? (
                 <div className="card">

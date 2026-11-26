@@ -111,24 +111,39 @@ const MessagingPage = ({ embedded = false }) => {
         return () => clearInterval(interval);
     }, [activeConv]);
 
+    const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+    useEffect(() => {
+        const onResize = () => setIsMobile(window.innerWidth <= 768);
+        window.addEventListener('resize', onResize);
+        return () => window.removeEventListener('resize', onResize);
+    }, []);
+
+    const showList = !isMobile || !activeConv;
+    const showChat = !isMobile || !!activeConv;
+
     return (
-        <div style={{ display: 'flex', height: embedded ? '100%' : 'calc(100vh - 100px)', border: embedded ? 'none' : '1px solid #e2e8f0', borderRadius: embedded ? 0 : '0.5rem', background: 'white' }}>
-            <div style={{ width: '300px' }}>
-                <ConversationList
-                    conversations={conversations}
-                    activeId={activeConv?.id}
-                    onSelect={handleSelectConversation}
-                    onNew={() => setShowNewModal(true)}
-                />
-            </div>
-            <div style={{ flex: 1 }}>
-                <ChatWindow
-                    conversation={activeConv}
-                    messages={messages}
-                    onSendMessage={handleSendMessage}
-                    loading={loadingMessages}
-                />
-            </div>
+        <div style={{ display: 'flex', height: embedded ? '100%' : 'calc(100vh - 110px)', border: embedded ? 'none' : '1px solid #e2e8f0', borderRadius: embedded ? 0 : '0.75rem', background: 'white', overflow: 'hidden' }}>
+            {showList && (
+                <div style={{ width: isMobile ? '100%' : '300px', borderRight: isMobile ? 'none' : '1px solid #e2e8f0', height: '100%' }}>
+                    <ConversationList
+                        conversations={conversations}
+                        activeId={activeConv?.id}
+                        onSelect={handleSelectConversation}
+                        onNew={() => setShowNewModal(true)}
+                    />
+                </div>
+            )}
+            {showChat && (
+                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', width: isMobile ? '100%' : 'auto', height: '100%' }}>
+                    <ChatWindow
+                        conversation={activeConv}
+                        messages={messages}
+                        onSendMessage={handleSendMessage}
+                        loading={loadingMessages}
+                        onBack={isMobile ? () => setActiveConv(null) : undefined}
+                    />
+                </div>
+            )}
 
             <Modal isOpen={showNewModal} onClose={() => setShowNewModal(false)} title="New Message">
                 <div>

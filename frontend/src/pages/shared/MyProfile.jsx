@@ -52,7 +52,7 @@ export default function MyProfile() {
             <h1 style={{ margin: '0 0 0.25rem' }}>My Profile</h1>
             <p style={{ color: 'var(--text-muted)', marginBottom: '2rem' }}>Manage your personal information and profile photo</p>
 
-            <div style={{ display: 'grid', gridTemplateColumns: '280px 1fr', gap: '1.5rem', alignItems: 'start' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', gap: '1.5rem', alignItems: 'start' }}>
                 {/* ── Avatar card ── */}
                 <div className="card" style={{ padding: '2rem', textAlign: 'center' }}>
                     <AvatarUpload

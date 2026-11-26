@@ -264,20 +264,21 @@ export default function PatientDashboard() {
 
             {/* ── HEADER ─────────────────────────────────────────────── */}
             <div style={{
-                background: 'linear-gradient(135deg,var(--primary-color),#1d4ed8)',
-                borderRadius: 16, padding: '1.5rem 2rem', marginBottom: '1.5rem',
-                color: '#fff', display: 'flex', alignItems: 'center', gap: '1.5rem',
+                background: 'linear-gradient(135deg, #0d9488 0%, #1d4ed8 100%)',
+                borderRadius: 16, padding: '1.5rem', marginBottom: '1.5rem',
+                color: '#fff', display: 'flex', alignItems: 'center', gap: '1.25rem',
                 flexWrap: 'wrap',
+                boxShadow: '0 10px 25px -4px rgba(13, 148, 136, 0.25)',
             }}>
                 {/* Avatar */}
                 <div style={{
-                    width: 72, height: 72, borderRadius: '50%', border: '3px solid rgba(255,255,255,0.5)',
+                    width: 68, height: 68, borderRadius: '50%', border: '3px solid rgba(255,255,255,0.5)',
                     overflow: 'hidden', background: 'rgba(255,255,255,0.15)',
                     display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
                 }}>
                     {profile?.avatar
                         ? <img src={profile.avatar} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                        : <User size={36} color="rgba(255,255,255,0.8)" />
+                        : <User size={34} color="rgba(255,255,255,0.85)" />
                     }
                 </div>
 
@@ -286,10 +287,10 @@ export default function PatientDashboard() {
                     {loading
                         ? <div style={{ height: 24, width: 180, borderRadius: 6, background: 'rgba(255,255,255,0.2)' }} />
                         : <>
-                            <h2 style={{ margin: 0, fontSize: '1.4rem', fontWeight: 700 }}>
+                            <h2 style={{ margin: 0, fontSize: '1.35rem', fontWeight: 800, color: '#ffffff' }}>
                                 {profile ? `${profile.first_name} ${profile.last_name}` : authUser?.username}
                             </h2>
-                            <div style={{ display: 'flex', gap: '1.25rem', marginTop: '0.35rem', flexWrap: 'wrap', opacity: 0.85, fontSize: '0.87rem' }}>
+                            <div style={{ display: 'flex', gap: '1rem', marginTop: '0.35rem', flexWrap: 'wrap', opacity: 0.9, fontSize: '0.85rem' }}>
                                 {profile?.date_of_birth && <span>Age: <strong>{age(profile.date_of_birth)}</strong></span>}
                                 {profile?.gender && <span>Gender: <strong style={{ textTransform: 'capitalize' }}>{profile.gender}</strong></span>}
                                 {profile?.blood_group && <span>Blood: <strong>{profile.blood_group}</strong></span>}
@@ -300,16 +301,16 @@ export default function PatientDashboard() {
                 </div>
 
                 {/* Status + actions */}
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '0.6rem' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: '0.6rem' }}>
                     <Badge label={patientStatus} color={patientStatus === 'Admitted' ? '#3b82f6' : '#10b981'} />
-                    <div style={{ display: 'flex', gap: '0.6rem' }}>
-                        <button style={{ ...btnSecondary, background: 'rgba(255,255,255,0.15)', color: '#fff', border: '1px solid rgba(255,255,255,0.35)', fontSize: '0.82rem' }}
+                    <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                        <button style={{ ...btnSecondary, background: 'rgba(255,255,255,0.18)', color: '#fff', border: '1px solid rgba(255,255,255,0.35)', fontSize: '0.82rem', backdropFilter: 'blur(4px)' }}
                             onClick={() => setShowEdit(true)}>
-                            <Edit2 size={14} style={{ display: 'inline' }} /> Edit Profile
+                            <Edit2 size={13} style={{ display: 'inline', marginRight: 4 }} /> Edit Profile
                         </button>
-                        <button style={{ ...btnSecondary, background: '#fff', color: 'var(--primary-color)', border: 'none', fontSize: '0.82rem' }}
+                        <button style={{ ...btnSecondary, background: '#fff', color: '#0f766e', border: 'none', fontSize: '0.82rem', fontWeight: 700 }}
                             onClick={() => setShowBook(true)}>
-                            <Plus size={14} style={{ display: 'inline' }} /> Book Appointment
+                            <Plus size={13} style={{ display: 'inline', marginRight: 4 }} /> Book Appointment
                         </button>
                     </div>
                 </div>
@@ -318,19 +319,10 @@ export default function PatientDashboard() {
             {error && <ErrorBanner message={error} onClose={() => setError('')} />}
 
             {/* ── TABS ────────────────────────────────────────────────── */}
-            <div style={{
-                display: 'flex', gap: 0, borderBottom: '2px solid #e2e8f0',
-                marginBottom: '1.5rem', overflowX: 'auto',
-            }}>
+            <div className="tabs">
                 {TABS.map(({ id, label, icon: Icon }) => (
-                    <button key={id} onClick={() => handleTabClick(id)} style={{
-                        padding: '0.65rem 1rem', border: 'none', background: 'none', cursor: 'pointer',
-                        fontWeight: 600, fontSize: '0.87rem', color: activeTab === id ? 'var(--primary-color)' : '#64748b',
-                        borderBottom: `2px solid ${activeTab === id ? 'var(--primary-color)' : 'transparent'}`,
-                        marginBottom: -2, display: 'flex', alignItems: 'center', gap: '0.4rem',
-                        whiteSpace: 'nowrap', transition: 'color 0.15s',
-                    }}>
-                        <Icon size={15} /> {label}
+                    <button key={id} onClick={() => handleTabClick(id)} className={`tab ${activeTab === id ? 'active' : ''}`}>
+                        <Icon size={16} /> <span>{label}</span>
                     </button>
                 ))}
             </div>
@@ -341,7 +333,7 @@ export default function PatientDashboard() {
                     {/* Medication Reminders — shown only when patient has active prescriptions */}
                     <MedicationReminders />
 
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.25rem' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 280px), 1fr))', gap: '1.25rem' }}>
 
                     {/* Next Appointment */}
                     <Card>
