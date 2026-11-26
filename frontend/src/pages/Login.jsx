@@ -25,7 +25,11 @@ const Login = () => {
                 default: navigate('/unauthorized');
             }
         } catch (err) {
-            setError('Invalid username or password');
+            console.error('Login error:', err);
+            const msg = err.response?.data?.detail 
+                || err.response?.data?.error 
+                || (err.response ? 'Invalid username or password' : 'Cannot connect to backend server. Please make sure Django (python manage.py runserver) is running.');
+            setError(msg);
             setLoading(false);
         }
     };
