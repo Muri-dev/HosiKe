@@ -48,7 +48,7 @@ SECRET_KEY = os.environ.get(
 DEBUG = os.environ.get('DJANGO_DEBUG', 'True').lower() in ('1', 'true', 'yes')
 
 _env_hosts = [h.strip() for h in os.environ.get('DJANGO_ALLOWED_HOSTS', '').split(',') if h.strip()]
-ALLOWED_HOSTS = _env_hosts or (['*'] if not DEBUG else [])
+ALLOWED_HOSTS = _env_hosts or ['*', '.vercel.app', 'localhost', '127.0.0.1']
 
 
 # Application definition

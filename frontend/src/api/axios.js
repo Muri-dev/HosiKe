@@ -1,7 +1,10 @@
 import axios from 'axios';
 
+// Use VITE_API_URL if configured; otherwise default to relative '/api' on the same domain (Vercel services routing)
+const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
+
 const api = axios.create({
-  baseURL: 'http://127.0.0.1:8000/api', // Direct backend URL since CORS is enabled
+  baseURL: API_BASE_URL,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -37,7 +40,7 @@ api.interceptors.response.use(
 
       if (refreshToken) {
         try {
-          const response = await axios.post('http://127.0.0.1:8000/api/auth/refresh/', {
+          const response = await axios.post(`${API_BASE_URL}/auth/refresh/`, {
             refresh: refreshToken,
           });
           
