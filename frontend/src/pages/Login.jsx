@@ -26,9 +26,20 @@ const Login = () => {
             }
         } catch (err) {
             console.error('Login error:', err);
-            const msg = err.response?.data?.detail 
-                || err.response?.data?.error 
-                || (err.response ? 'Invalid username or password' : 'Cannot connect to backend server. Please make sure Django (python manage.py runserver) is running.');
+            let msg;
+            if (err.response) {
+                if (err.response.status === 401) {
+                    msg = err.response.data?.detail || 'Invalid username or password';
+                } else if (err.response.status === 404) {
+                    msg = 'API endpoint not found (404). Please restart your Vite dev server (Ctrl+C then npm run dev) so the /api proxy takes effect, and ensure Django is running on port 8000.';
+                } else if (err.response.status >= 500) {
+                    msg = err.response.data?.detail || err.response.data?.error || `Backend server error (${err.response.status}). Please check your Django terminal logs.`;
+                } else {
+                    msg = err.response.data?.detail || err.response.data?.error || `Request failed with status ${err.response.status}.`;
+                }
+            } else {
+                msg = 'Cannot connect to backend server. Please make sure Django is running: python manage.py runserver';
+            }
             setError(msg);
             setLoading(false);
         }
